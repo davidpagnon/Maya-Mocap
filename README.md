@@ -23,7 +23,8 @@
 5. [Camera toolbox](#camera-toolbox)
 6. [Projects](#projects)
 7. [Send Us Feedback!](#send-us-feedback)
-8. [License](#license)
+8. [Contributers](#contributers)
+9. [License](#license)
 
 ## How to
 
@@ -71,6 +72,7 @@ This repository is meant to get more tools in the future. Please feel free to ad
 Among others, I'd like to add:
 - An Xsens importer
 - An Opensim importer (.osim model, and .mot inverse kinematics)
+- A code for importing one mesh per frame on GPU nodes
 
 
 ## Send Us Feedback!
@@ -78,6 +80,11 @@ Among others, I'd like to add:
 This library is open source for research purposes, and I want to improve it! So let me know (create a new GitHub issue or pull request, email us, etc.) if you:
 1. Find/fix any bug or know how to improve anything.
 2. Want to add/show some cool functionality/demo/project regarding motion capture in Maya. We would love to integrate your project to this repository!
+
+## Contributers
+David Pagnon (maintainer), contact@david-pagnon.com\
+Lionel Reveret, lionel.reveret@inria.fr\
+Thibault Goyallon, thibault.goyallon@inria.fr
 
 ## License
 The code found on this repository is free to use, edit, and redistribute under the BSD-3 licensing terms.
