@@ -1,7 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 '''
-Import trc files.
-Choose if you want only the markers, or also to construct the skeleton.
-In case you want the skeleton, please refer to help on function "set_skeleton".
+    ##################################################
+    ## Import trc files                             ##
+    ##################################################
+    
+    Choose if you only want to display the markers, or also to construct the skeleton.
+    In case you want the skeleton, please refer to help on function "set_skeleton".
 '''
 
 
@@ -9,6 +16,17 @@ In case you want the skeleton, please refer to help on function "set_skeleton".
 import maya.cmds as cmds
 import numpy as np
 import pandas as pd
+
+
+## AUTHORSHIP INFORMATION
+__author__ = "David Pagnon"
+__copyright__ = "Copyright 2021, Maya-Mocap"
+__credits__ = ["David Pagnon"]
+__license__ = "BSD 3-Clause License"
+__version__ = "1.0"
+__maintainer__ = "David Pagnon"
+__email__ = "contact@david-pagnon.com"
+__status__ = "Production"
 
 
 ## FUNCTIONS

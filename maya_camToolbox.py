@@ -1,11 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 '''
-Camera toolbox.
-Let you 
-- set cameras in scene from chosen specs.
-- or set cameras from calibration file (.toml).
-- save a calibration file from cameras in scene.
-- film image sequences from the cameras in scene.
-- display films in scene.
+    ##################################################
+    ## Camera toolbox                               ##
+    ##################################################
+    
+    Lets you: 
+    - set cameras in scene from chosen specs.
+    - or set cameras from calibration file (.toml).
+    - save a calibration file from cameras in scene.
+    - film image sequences from the cameras in scene.
+    - display films in scene.
 '''
 
 
@@ -16,6 +23,17 @@ import glob
 import numpy as np
 import toml
 import cv2
+
+
+## AUTHORSHIP INFORMATION
+__author__ = "David Pagnon"
+__copyright__ = "Copyright 2021, Maya-Mocap"
+__credits__ = ["David Pagnon"]
+__license__ = "BSD 3-Clause License"
+__version__ = "1.0"
+__maintainer__ = "David Pagnon"
+__email__ = "contact@david-pagnon.com"
+__status__ = "Production"
 
 
 ## FUCTIONS
