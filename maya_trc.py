@@ -153,12 +153,9 @@ def set_skeleton(data, str_cnt, numFrames):
     cmds.select('CHipJ'+str_cnt, hi=True)
     jointsJ = cmds.ls(sl=1)
     
-    for j in range(1,len(jointsJ)):
-        cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
-        
-    # Place joints
+    # Place and orient joints
     for i in range(numFrames):
-        for j in range(len(jointsJ)):
+        for j in range(len(jointsJ)): # place joints
             if j == 0: #CHipJ
                 jointCoordX = np.add(data.loc[i,'LHip_Z'], data.loc[i,'RHip_Z']) / 2
                 jointCoordY = np.add(data.loc[i,'LHip_X'], data.loc[i,'RHip_X']) / 2
@@ -168,12 +165,12 @@ def set_skeleton(data, str_cnt, numFrames):
                 jointCoordX = data.loc[i,jnt+'_Z']
                 jointCoordY = data.loc[i,jnt+'_X']
                 jointCoordZ = data.loc[i,jnt+'_Y']
-                
             cmds.move(jointCoordX, jointCoordY, jointCoordZ, jointsJ[j], a=True)
-        for j in range(len(jointsJ)):    
-            # cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
             cmds.setKeyframe(jointsJ[j], t=i)
-
+        if i == 0:  # orient joints
+            for j in range(1,len(jointsJ)):
+                cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
+                cmds.setKeyframe(jointsJ[j], t=i)
 
 def trc_callback(*arg):
     '''
