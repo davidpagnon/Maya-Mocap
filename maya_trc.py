@@ -16,6 +16,7 @@
 import maya.cmds as cmds
 import numpy as np
 import pandas as pd
+import re
 
 
 ## AUTHORSHIP INFORMATION
@@ -55,7 +56,7 @@ def increment_labels(labels):
     objs = cmds.ls(type='transform')
     cnt=1 
     for l in labels:
-        if l+str(cnt) in objs:
+        if l+str(cnt) in objs or l+'J'+str(cnt) in objs:
             cnt+=1
             continue
     str_cnt = str(cnt)
@@ -71,7 +72,6 @@ def analyze_data(data):
     numFrames = data.shape[0]
     labels_raw = data.columns
     labels = [labels_raw[2::3][i][:-2] for i in range(len(labels_raw[2::3]))]
-
     str_cnt, labels = increment_labels(labels)
     
     return labels, str_cnt, numFrames
@@ -164,11 +164,14 @@ def set_skeleton(data, str_cnt, numFrames):
                 jointCoordY = np.add(data.loc[i,'LHip_X'], data.loc[i,'RHip_X']) / 2
                 jointCoordZ = np.add(data.loc[i,'LHip_Y'], data.loc[i,'RHip_Y']) / 2
             else:
-                jointCoordX = data.loc[i,jointsJ[j][:-2]+'_Z']
-                jointCoordY = data.loc[i,jointsJ[j][:-2]+'_X']
-                jointCoordZ = data.loc[i,jointsJ[j][:-2]+'_Y']
+                jnt =  re.sub(r'[0-9]', '', jointsJ[j])[:-1] # take off numbers + letter J from joint name
+                jointCoordX = data.loc[i,jnt+'_Z']
+                jointCoordY = data.loc[i,jnt+'_X']
+                jointCoordZ = data.loc[i,jnt+'_Y']
                 
             cmds.move(jointCoordX, jointCoordY, jointCoordZ, jointsJ[j], a=True)
+        for j in range(len(jointsJ)):    
+            # cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
             cmds.setKeyframe(jointsJ[j], t=i)
 
 
