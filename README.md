@@ -16,10 +16,11 @@
 ## Contents
 1. [How to](#how-to)
 2. [Imports](#imports)
-    1. [TRC import](#trc-import)
-    2. [Opensim import](#opensim-import)
-    3. [BVH import](#bvh-import)
-    4. [FBX import](#fbx-import)
+    1. [Opensim import](#opensim-import)
+    2. [TRC import](#trc-import)
+    3. [C3D import](#c3d-import)
+    4. [BVH import](#bvh-import)
+    5. [FBX import](#fbx-import)
 5. [Camera toolbox](#camera-toolbox)
 6. [Projects](#projects)
 7. [Send Us Feedback!](#send-us-feedback)
@@ -28,26 +29,45 @@
 
 ## How to
 
-  1. Clone the repository or just download the python code you need.
+  1. First you need to install python packages in Maya.
+  Open a command prompt (Windows -> cmd).\
+  Type the following (beware of replacing <year> with your version):
+    
+       ```
+       "C:\Program Files\Autodesk\Maya<year>\bin\mayapy" -m pip install pandas c3d numpy
+       ```
+&emsp;&emsp;If it does not work, check [there](http://mgland.com/qa/en/?qa=1748/how-to-use-pip-with-maya).
+  
+  2. Clone the repository or just download the python piece of code you need.
 
-  2. Add it to your shelf as an executable button.\
-Click on "Create a new shelf", and then edit it by clicking on "Shelf editor"\
+  3. Add each piece of code to your shelf as an executable button.\
+Click on 'Create a new shelf', and then edit it by clicking on 'Shelf editor'.\
+Under 'Command' tab, select 'Python', and type `execfile("PATH_TO_YOUR_SCRIPT.py")`.
+
 ![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
 ![image](https://user-images.githubusercontent.com/54667644/111801482-4a3b3700-88cd-11eb-8d47-952bc40f0106.png)
 
 ## Imports
+
+### Opensim import
+...Coming soon...
+* Lets you import .osim model.
+* Lets you animate it with .mot inverse kinematics.
+* 
 ### TRC import
-Helps you:
+Lets you:
 * Import trc files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
 * In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
 
 ![image](https://user-images.githubusercontent.com/54667644/111803632-81124c80-88cf-11eb-8759-89e39774de7f.png)
 
-### Opensim import
-...In process...
-* Lets you import .osim model.
-* Lets you animate it with .mot inverse kinematics.
+### C3D import
+Lets you:
+* Import c3d files.
+* Choose if you only want to display the markers, or also to construct the skeleton.
+* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
+* :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
 
 ### BVH import
 A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH)
