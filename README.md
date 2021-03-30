@@ -51,7 +51,7 @@ N.B.: PATH_TO_YOUR_SCRIPT must be written with forward slashes.
 ![image](https://user-images.githubusercontent.com/54667644/111801482-4a3b3700-88cd-11eb-8d47-952bc40f0106.png)
 
 ## Camera toolbox
-A toolbox for various operations on cameras in Maya.\
+`maya_camToolbox.py` is a toolbox for various operations on cameras in Maya.\
 Lets you: 
 * set cameras in scene from chosen specs.
 * or set cameras from calibration file (.toml).
@@ -69,19 +69,19 @@ Lets you:
 * Lets you animate it with .mot inverse kinematics.
 
 ### TRC import
-Lets you:
+`maya_trc.py` lets you:
 * Import trc files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
-* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
+* In case you want the skeleton (and it's not Openpose body_25b), please refer to the section SKELETON DEFINITION.
 
 ![image](https://user-images.githubusercontent.com/54667644/111803632-81124c80-88cf-11eb-8759-89e39774de7f.png)
 
 ### C3D import
-Lets you:
-* First convert c3d to trc files using c3d2trc.py.
+`maya_c3d.py` lets you:
+* First convert c3d to trc files using `c3d2trc.py`.
 * Then import resulting trc files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
-* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
+* In case you want the skeleton (and it's not Openpose body_25b), please refer to SKELETON DEFINITION in trc import.
 * :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
 
 ### BVH import
@@ -92,7 +92,8 @@ Instructions for importing FBX files can be found [at this address](https://www.
 
 ## Others
 ### C3D to TRC
-* Converts c3d binary files to trc format.
+`c3d2trc.py` lets you:
+* Convert c3d binary files to trc format.
 * Usage: Open a python interpreter. Type `import c3d2trc`, and then `c3d2trc.c3d2trc('<your_c3d_file>')`
 * :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.**
 
