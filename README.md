@@ -22,7 +22,7 @@
     4. [BVH import](#bvh-import)
     5. [FBX import](#fbx-import)
 5. [Camera toolbox](#camera-toolbox)
-6. [Projects](#projects)
+6. [To-do list](#to-do-list)
 7. [Send Us Feedback!](#send-us-feedback)
 8. [Contributers](#contributers)
 9. [License](#license)
@@ -64,6 +64,7 @@ Lets you:
 
 ### C3D import
 Lets you:
+* Convert c3d to trc.
 * Import c3d files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
 * In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
@@ -87,7 +88,7 @@ Lets you:
 ![image](https://user-images.githubusercontent.com/54667644/111811597-84113b00-88d7-11eb-803f-1b9726523793.png)
 
 
-## Projects
+## To-do list
 This repository is meant to get more tools in the future. Please feel free to add your suggestions and/or code!
 Among others, I'd like to add:
 - An Xsens importer
