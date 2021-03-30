@@ -36,7 +36,7 @@
   Type the following (beware of replacing <year> with your version):
     
        ```
-       "C:\Program Files\Autodesk\Maya<year>\bin\mayapy" -m pip install pandas c3d numpy
+       "C:\Program Files\Autodesk\Maya<year>\bin\mayapy" -m pip install pandas c3d numpy anytree
        ```
 &emsp;&emsp;If it does not work, check [there](http://mgland.com/qa/en/?qa=1748/how-to-use-pip-with-maya).
   
@@ -44,7 +44,8 @@
 
   3. Add each piece of code to your shelf as an executable button.\
 Click on 'Create a new shelf', and then edit it by clicking on 'Shelf editor'.\
-Under 'Command' tab, select 'Python', and type `execfile("PATH_TO_YOUR_SCRIPT.py")`.
+Under 'Command' tab, select 'Python', and type `execfile("PATH_TO_YOUR_SCRIPT.py")`.\
+N.B.: PATH_TO_YOUR_SCRIPT must be written with forward slashes.
 
 ![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
 ![image](https://user-images.githubusercontent.com/54667644/111801482-4a3b3700-88cd-11eb-8d47-952bc40f0106.png)
