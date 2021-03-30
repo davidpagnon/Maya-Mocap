@@ -8,7 +8,7 @@
     ##################################################
     
     Choose if you only want to display the markers, or also to construct the skeleton.
-    In case you want the skeleton, please refer to help on function "set_skeleton".
+    In case you want the skeleton, please refer to the section SKELETON DEFINITION.
 '''
 
 
@@ -17,6 +17,7 @@ import maya.cmds as cmds
 import numpy as np
 import pandas as pd
 import re
+from anytree import Node, RenderTree
 
 
 ## AUTHORSHIP INFORMATION
@@ -28,6 +29,60 @@ __version__ = "1.0"
 __maintainer__ = "David Pagnon"
 __email__ = "contact@david-pagnon.com"
 __status__ = "Production"
+
+
+## SKELETON DEFINITION
+'''
+This is given for the OpenPose body_25b joint hierarchy.
+Not taken into account if you're only importing the markers.
+
+If you want to import the skeleton, you need to adapt it to your own skeleton hierarchy.
+1. Your joint names should be your trc labels + letter J.
+   Example : trc label = 'CHip' --> joint name = 'CHipJ'
+2. Then you need to make sure your skeleton hierarchy is respected.
+   Your joint names must be defined from the root one to the more distal ones.
+
+/!\ Be sure to set Evaluation mode to DG /!\
+Windows -> Settings/Preferences -> Preferences -> Animation -> Evaluation mode -> DG
+It may help your bones connect your joints.   
+'''
+root = Node("CHipJ", children=[
+    Node("RHipJ", children=[
+        Node("RKneeJ", children=[
+            Node("RAnkleJ", children=[
+                Node("RBigToeJ", children=[
+                    Node("RSmallToeJ"),
+                ]),
+                Node("RHeelJ"),
+            ]),
+        ]),
+    ]),
+    Node("LHipJ", children=[
+        Node("LKneeJ", children=[
+            Node("LAnkleJ", children=[
+                Node("LBigToeJ", children=[
+                    Node("LSmallToeJ"),
+                ]),
+                Node("LHeelJ"),
+            ]),
+        ]),
+    ]),
+    Node("NeckJ", children=[
+        Node("HeadJ", children=[
+            Node("NoseJ"),
+        ]),
+        Node("RShoulderJ", children=[
+            Node("RElbowJ", children=[
+                Node("RWristJ"),
+            ]),
+        ]),
+        Node("LShoulderJ", children=[
+            Node("LElbowJ", children=[
+                Node("LWristJ"),
+            ]),
+        ]),
+    ]),
+])
 
 
 ## FUNCTIONS
@@ -96,70 +151,42 @@ def set_markers(data, labels, numFrames):
             cmds.setKeyframe(labels[j], t=i, at='translateZ', v=data.iloc[i,3*j+1])
     
 
+def print_skeleton():
+    '''
+    Prints skeleton.
+    '''
+    for pre, _, node in RenderTree(root):
+        print("%s%s" % (pre, node.name))
+        
+
 def set_skeleton(data, str_cnt, numFrames):
     '''
     Set skeleton from trc
-    
-    This is given for the OpenPose body_25b joint hierarchy.
-    You need to adapt it to the hierarchy of your own skeleton model.
-    1. Your joint names should be your trc labels + letter J.
-       Example : trc label = 'CHip' --> joint name = 'CHipJ'
-    2. Then you need to make sure your skeleton hierarchy is respected.
-       Your joint names must be defined from the root one to the more distal ones.
-       
-    /!\ Be sure to set Evaluation mode to DG /!\
-    Windows -> Settings/Preferences -> Preferences -> Animation -> Evaluation mode -> DG
-    It may help your bones connect your joints
+    In case you're not using the model body_25b from openpose, you need to modify the section SKELETON DEFINITION
     '''
         
     # Create joints
-    cmds.select(deselect=True)
-    # Hip center (CHipJ) is needed as a root joint, although it's not given by body_25b model.
-    # We will define it further down as the midpoint between the right and the left joint.
-    cmds.joint(name='CHipJ'+str_cnt)
-
-    cmds.joint(name='RHipJ'+str_cnt)
-    cmds.joint(name='RKneeJ'+str_cnt)
-    cmds.joint(name='RAnkleJ'+str_cnt)
-    cmds.joint(name='RBigToeJ'+str_cnt)
-    cmds.joint(name='RSmallToeJ'+str_cnt)
-    cmds.select('RAnkleJ'+str_cnt)
-    cmds.joint(name='RHeelJ'+str_cnt)
-
-    cmds.select('CHipJ'+str_cnt)
-    cmds.joint(name='LHipJ'+str_cnt)
-    cmds.joint(name='LKneeJ'+str_cnt)
-    cmds.joint(name='LAnkleJ'+str_cnt)
-    cmds.joint(name='LBigToeJ'+str_cnt)
-    cmds.joint(name='LSmallToeJ'+str_cnt)
-    cmds.select('LAnkleJ'+str_cnt)
-    cmds.joint(name='LHeelJ'+str_cnt)
-
-    cmds.select('CHipJ'+str_cnt)
-    cmds.joint(name='NeckJ'+str_cnt)
-    cmds.joint(name='HeadJ'+str_cnt)
-    cmds.joint(name='NoseJ'+str_cnt)
-
-    cmds.select('NeckJ'+str_cnt)
-    cmds.joint(name='RShoulderJ'+str_cnt)
-    cmds.joint(name='RElbowJ'+str_cnt)
-    cmds.joint(name='RWristJ'+str_cnt)
-
-    cmds.select('NeckJ'+str_cnt)
-    cmds.joint(name='LShoulderJ'+str_cnt)
-    cmds.joint(name='LElbowJ'+str_cnt)
-    cmds.joint(name='LWristJ'+str_cnt)
-
+    cmds.select(None)
+    cmds.joint(name = root.name+str_cnt)
+    for _, _, node in RenderTree(root):    
+        if node.name != root.name:
+            cmds.select(node.parent.name+str_cnt)
+            cmds.joint(name = node.name+str_cnt)
     cmds.select('CHipJ'+str_cnt, hi=True)
     jointsJ = cmds.ls(sl=1)
+    
+    
+    # Hip center (CHipJ) is needed as a root joint, although it's not given by body_25b model.
+    # We will define it further down as the midpoint between the right and the left joint.
     
     # Place and orient joints
     for i in range(numFrames):
         for j in range(len(jointsJ)): # place joints
-            if j == 0: #CHipJ
-                jointCoordX = np.add(data.loc[i,'LHip_Z'], data.loc[i,'RHip_Z']) / 2
-                jointCoordY = np.add(data.loc[i,'LHip_X'], data.loc[i,'RHip_X']) / 2
-                jointCoordZ = np.add(data.loc[i,'LHip_Y'], data.loc[i,'RHip_Y']) / 2
+            if j == 0 and not root.name[:-1] in data.columns: #If model has no root, take midpoint of hips
+                RHip, LHip = root.children[0].name[:-1], root.children[1].name[:-1]
+                jointCoordX = np.add(data.loc[i,RHip+'_Z'], data.loc[i,LHip+'_Z']) / 2
+                jointCoordY = np.add(data.loc[i,RHip+'_X'], data.loc[i,LHip+'_X']) / 2
+                jointCoordZ = np.add(data.loc[i,RHip+'_Y'], data.loc[i,LHip+'_Y']) / 2
             else:
                 jnt =  re.sub(r'[0-9]', '', jointsJ[j])[:-1] # take off numbers + letter J from joint name
                 jointCoordX = data.loc[i,jnt+'_Z']
@@ -172,6 +199,7 @@ def set_skeleton(data, str_cnt, numFrames):
                 cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
                 cmds.setKeyframe(jointsJ[j], t=i)
 
+                
 def trc_callback(*arg):
     '''
     Inputs checkbox choices and trc path
@@ -193,6 +221,7 @@ def trc_callback(*arg):
 
     skeleton_check = cmds.checkBox(skeleton_box, query=True, value=True)
     if skeleton_check == True:
+        print_skeleton()
         set_skeleton(data, str_cnt, numFrames)
         cmds.parent('CHipJ'+str_cnt, 'TRC'+str_cnt)
         
@@ -207,4 +236,3 @@ markers_box = cmds.checkBox(label='Display markers', ann='Display markers as loc
 skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
 cmds.button(label='Import trc', ann='Import and display trc', command = trc_callback)
 cmds.showWindow(window)
-
