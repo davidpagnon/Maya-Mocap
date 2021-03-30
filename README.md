@@ -33,7 +33,7 @@
 
   1. First you need to install python packages in Maya.
   Open a command prompt (Windows -> cmd).\
-  Type the following (beware of replacing <year> with your version):
+  Type the following (replace `<year>` with your version):
     
        ```
        "C:\Program Files\Autodesk\Maya<year>\bin\mayapy" -m pip install pandas c3d numpy anytree
@@ -73,8 +73,7 @@ Lets you:
 * Import trc files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
 * In case you want the skeleton (and it's not Openpose body_25b), please refer to the section SKELETON DEFINITION.
-
-![image](https://user-images.githubusercontent.com/54667644/111803632-81124c80-88cf-11eb-8759-89e39774de7f.png)
+![image](https://user-images.githubusercontent.com/54667644/113013546-176e2a00-917c-11eb-977c-2cf9dc8513cb.png)
 
 ### C3D import
 `maya_c3d.py` lets you:
