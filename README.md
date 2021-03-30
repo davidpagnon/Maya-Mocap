@@ -15,17 +15,19 @@
 
 ## Contents
 1. [How to](#how-to)
-2. [Imports](#imports)
+2. [Camera toolbox](#camera-toolbox)
+5. [Imports](#imports)
     1. [Opensim import](#opensim-import)
     2. [TRC import](#trc-import)
     3. [C3D import](#c3d-import)
     4. [BVH import](#bvh-import)
     5. [FBX import](#fbx-import)
-5. [Camera toolbox](#camera-toolbox)
-6. [To-do list](#to-do-list)
-7. [Send Us Feedback!](#send-us-feedback)
-8. [Contributers](#contributers)
-9. [License](#license)
+6. [Others](#others)
+    1. [C3D to TRC](#c3d-to-trc)
+7. [To-do list](#to-do-list)
+8. [Send Us Feedback!](#send-us-feedback)
+9. [Contributers](#contributers)
+10. [License](#license)
 
 ## How to
 
@@ -47,35 +49,6 @@ Under 'Command' tab, select 'Python', and type `execfile("PATH_TO_YOUR_SCRIPT.py
 ![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
 ![image](https://user-images.githubusercontent.com/54667644/111801482-4a3b3700-88cd-11eb-8d47-952bc40f0106.png)
 
-## Imports
-
-### Opensim import
-...Coming soon...
-* Lets you import .osim model.
-* Lets you animate it with .mot inverse kinematics.
-* 
-### TRC import
-Lets you:
-* Import trc files.
-* Choose if you only want to display the markers, or also to construct the skeleton.
-* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
-
-![image](https://user-images.githubusercontent.com/54667644/111803632-81124c80-88cf-11eb-8759-89e39774de7f.png)
-
-### C3D import
-Lets you:
-* Convert c3d to trc.
-* Import c3d files.
-* Choose if you only want to display the markers, or also to construct the skeleton.
-* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
-* :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
-
-### BVH import
-A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH)
-
-## FBX import
-Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
-
 ## Camera toolbox
 A toolbox for various operations on cameras in Maya.\
 Lets you: 
@@ -87,6 +60,40 @@ Lets you:
 
 ![image](https://user-images.githubusercontent.com/54667644/111811597-84113b00-88d7-11eb-803f-1b9726523793.png)
 
+## Imports
+
+### Opensim import
+...Coming soon...
+* Lets you import .osim model.
+* Lets you animate it with .mot inverse kinematics.
+
+### TRC import
+Lets you:
+* Import trc files.
+* Choose if you only want to display the markers, or also to construct the skeleton.
+* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
+
+![image](https://user-images.githubusercontent.com/54667644/111803632-81124c80-88cf-11eb-8759-89e39774de7f.png)
+
+### C3D import
+Lets you:
+* First convert c3d to trc files using c3d2trc.py.
+* Then import resulting trc files.
+* Choose if you only want to display the markers, or also to construct the skeleton.
+* In case you want the skeleton (and it's not Openpose body_25b), please refer to help on function "set_skeleton".
+* :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
+
+### BVH import
+A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH)
+
+### FBX import
+Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
+
+## Others
+### C3D to TRC
+* Converts c3d binary files to trc format.
+* Usage: Open a python interpreter. Type `import c3d2trc`, and then `c3d2trc.c3d2trc('<your_c3d_file>')`
+* :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.**
 
 ## To-do list
 This repository is meant to get more tools in the future. Please feel free to add your suggestions and/or code!
