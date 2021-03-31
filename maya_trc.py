@@ -41,10 +41,6 @@ If you want to import the skeleton, you need to adapt it to your own skeleton hi
    Example : trc label = 'CHip' --> joint name = 'CHipJ'
 2. Then you need to make sure your skeleton hierarchy is respected.
    Your joint names must be defined from the root one to the more distal ones.
-
-/!\ Be sure to set Evaluation mode to DG /!\
-Windows -> Settings/Preferences -> Preferences -> Animation -> Evaluation mode -> DG
-It may help your bones connect your joints.   
 '''
 root = Node("CHipJ", children=[
     Node("RHipJ", children=[
@@ -104,8 +100,8 @@ def df_from_trc(trc_path):
     data = data_df.iloc[:,2:] # Remove columns 'Frame#' and 'Time'
     
     return header, data
-   
-
+    
+    
 def increment_labels(labels):
     '''
     Increment label names in case of previous trc importations
@@ -196,6 +192,9 @@ def set_skeleton(data, str_cnt, numFrames):
                 cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
                 cmds.setKeyframe(jointsJ[j], t=i)
 
+    # Evaluation mode to DG to make sure bones are connecting the joints
+    # Change it in Windows -> Settings/Preferences -> Preferences -> Animation -> Evaluation mode -> DG
+    cmds.evaluationManager(mode="off")
 
 def trc_callback(*arg):
     '''

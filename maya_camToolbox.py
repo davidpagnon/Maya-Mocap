@@ -23,6 +23,7 @@ import glob
 import numpy as np
 import toml
 import cv2
+import re
 
 
 ## AUTHORSHIP INFORMATION
@@ -36,7 +37,7 @@ __email__ = "contact@david-pagnon.com"
 __status__ = "Production"
 
 
-## FUCTIONS
+## FUNCTIONS
 def retrieveCal(path):
     '''
     Retrieve calibration parameters from toml file.
@@ -61,6 +62,24 @@ def retrieveCal(path):
         
     return S, D, K, R, T, P
 
+
+def increment_name(name):   
+    '''
+    Increment object names starting with str
+    '''
+    name = name.split('|')[-1]
+    name_root = re.sub(r'[|0-9]', '', name)
+    objs = cmds.ls('*'+name_root+'*', type='transform')
+    objs = [obj.split('|')[-1] for obj in objs]
+    cnt=1
+    while name in objs:
+        name_root = re.sub(r'[|0-9]', '', name)
+        name = name_root+str(cnt)
+        cnt+=1
+        if cnt==100:
+            break
+    return name
+    
     
 def applyImg(plane, filename, sequence=False):
     '''
@@ -184,7 +203,7 @@ def setCamsfromCal_callback(*args):
     cmds.group(n='cameras')
 
     
-def saveCalfromCam_callback(*arg):
+def saveCalfromCam_callback(*args):
     '''
     Save calibration as a .toml file from cameras in scene.
     '''
@@ -236,17 +255,14 @@ def saveCalfromCam_callback(*arg):
         cal_f.write(meta)
 
         
-def filmfromCam_callback(*arg):
+def filmfromCam_callback(*args):
     '''
     Film playblast image sequences from each cameras in scene.
     '''
-    cmds.select('cameras')
-    list_cams = cmds.ls(sl=1, dag=1, type='transform')[:-1]
-    size = cmds.getAttr("defaultResolution.width"), cmds.getAttr("defaultResolution.height")
+    list_cams = cmds.ls(cameras=1)
+    list_cams = [k.split('S')[0] for k in list_cams if 'cam' in k]
 
-    path = cmds.fileDialog2(dialogStyle=2, cap="Choose video saving folder", fm=3)[0]
-    # eg: G:\Op2Ani\191209_6miqus_xsens\dance_2\seq003
-    
+    path = cmds.fileDialog2(dialogStyle=2, cap="Choose video saving folder", fm=3)[0] # eg: G:\Op2Ani\191209_6miqus_xsens\dance_2\seq003
     videos_dir = os.path.join(path, '%d_cams_maya'%len(list_cams))
     if not os.path.exists(videos_dir): 
         os.mkdir(videos_dir) 
@@ -255,6 +271,7 @@ def filmfromCam_callback(*arg):
         if confirm == 'No':
             return
             
+    size = cmds.getAttr("defaultResolution.width"), cmds.getAttr("defaultResolution.height")
     cmds.grid(toggle=0)
     cmds.setAttr('cameras.visibility', 0)
 
@@ -272,17 +289,20 @@ def filmfromCam_callback(*arg):
     cmds.setAttr('cameras.visibility', 1)
 
     
-def setVidfromSeq_callback(*arg):
+def setVidfromSeq_callback(*args):
     '''
     Display image sequences behind each camera in scene.
+    Each sequence should be in a different camera folder which name includes 'img'.
     '''
     px_size = float(cmds.textFieldGrp(pxsize_field, query=1, text=1)) * 1e-6
     binning_factor = float(cmds.textFieldGrp(binning_field, query=1, text=1))
+    scaling_check = cmds.checkBox(scaling_box, query=True, value=True)
     
     path = cmds.fileDialog2(dialogStyle=2, cap="Choose root directory of videos folders", fm=3)[0]
     img_dirs = list(filter( lambda item: 'img' in item, next(os.walk(path))[1] ))
     img_dirs_full = [os.path.join( path, dir ) for dir in img_dirs]
-    img_files_per_cam = [glob.glob(os.path.join(dir,"*.png")) for dir in img_dirs_full]
+    img_files_per_cam = [glob.glob(os.path.join(dir,"*."+filetype)) for dir in img_dirs_full]
+    nb_cam = len(img_dirs_full)
 
     ## Change image names to comply with 'name.XXX.png'
     while True:
@@ -292,34 +312,57 @@ def setVidfromSeq_callback(*arg):
         except:
             filename_base = '_'.join([os.path.basename(path), 'cam_%d' %(c+1)])
             filename_ext = os.path.splitext(img_files_per_cam[0][0])[1]
-            for c in range(len(img_dirs_full)): # Pour chaque cam
+            for c in range(nb_cam): # Pour chaque cam
                 for i, f in enumerate(img_files_per_cam[c]):
                     os.rename(f, os.path.join(img_dirs_full[c], ''.join([filename_base, '.%05d'%i, filename_ext])) )
-            img_files_per_cam = [glob.glob(os.path.join(dir,"*.png")) for dir in img_dirs_full]
+            img_files_per_cam = [glob.glob(os.path.join(dir,"*."+filetype)) for dir in img_dirs_full]
 
     ## Set videos in scene
-    vidPlane=[]
-    for c in range(len(img_dirs_full)): # Pour chaque cam
-        # plane size
-        W = cmds.camera('cam_%d' %(c+1), query=True, horizontalFilmAperture=True) / (px_size*39.3701) / binning_factor
-        H = cmds.camera('cam_%d' %(c+1), query=True, verticalFilmAperture=True) / (px_size*39.3701) / binning_factor
-        vidPlane.append( cmds.polyPlane(n='vid_%d' %(c+1), ax=[0,0,1], w=W*px_size, h=H*px_size)[0] )
-        # set plane at camera locations
+    vidPlane = []
+    for c in range(nb_cam): 
+        # camera parameters
+        fm = cmds.camera('cam_%d' %(c+1), query=True, focalLength=True)        
         camMat = cmds.xform('cam_%d' %(c+1), query=True, matrix=True)
+        # image plane size at camera origin (m)
+        W = cmds.camera('cam_%d' %(c+1), query=True, horizontalFilmAperture=True) / 39.3701 / binning_factor
+        H = cmds.camera('cam_%d' %(c+1), query=True, verticalFilmAperture=True) / 39.3701 / binning_factor
+        # create image plane
+        vidPlane.append(increment_name('vid_%d' %(c+1)))
+        vidPlane[c] = cmds.polyPlane(n=vidPlane[c], ax=[0,0,1], w=W, h=H)[0] 
+        # set plane at camera locations
         cmds.xform(vidPlane[c], m=camMat)
-        # scale plane according to distance
-        distance = cmds.xform('cam_%d' %(c+1), q=1, os=1, translation=1)[2]
-        fm = cmds.camera('cam_%d' %(c+1), q=1, focalLength=True)        
-        cmds.setAttr(vidPlane[c]+'.scaleX',  distance/(fm*1e-3) )   # D/fm
-        cmds.setAttr(vidPlane[c]+'.scaleY', distance/(fm*1e-3) )
-        cmds.makeIdentity(vidPlane[c], apply=True, scale=True)
-        # rotate plane
-        cmds.select(vidPlane[c])
-        # apply img texture to plane
-        applyImg(vidPlane[c], img_files_per_cam[c][0], sequence=True)
+        cmds.parent(vidPlane[c], 'cam_%d' %(c+1), absolute=True)
+        
+        if scaling_check == True: 
+            # scale up and down while translating image plane
+            cmds.expression(string = vidPlane[c]+'.scaleX' + '= -' + vidPlane[c]+'.translateZ' + '/ (' + str(fm) + '*1e-3)')
+            cmds.expression(string = vidPlane[c]+'.scaleY' + '= -' + vidPlane[c]+'.translateZ' + '/ (' + str(fm) + '*1e-3)')
+            # set plane one meter away from the camera plane
+            distance = -1
+            cmds.setAttr(vidPlane[c]+'.translateZ',  distance)
+        else:
+            # scale plane to the size it would be at world origin
+            distance = cmds.xform('cam_%d' %(c+1), q=1, os=1, translation=1)[2]
+            cmds.setAttr(vidPlane[c]+'.scaleX',  distance/(fm*1e-3) )   # D/fm
+            cmds.setAttr(vidPlane[c]+'.scaleY', distance/(fm*1e-3) )
 
+    ## Apply img texture to plane
+        applyImg(vidPlane[c], img_files_per_cam[c][0], sequence=True)
+    
+    ## Move tool axis orientation: along rotation axis in order to prevent weird translations
+    cmds.manipPivot(mto=4)
     cmds.select(vidPlane)
-    cmds.group(n='videos') 
+    
+    
+def reproj_3D(*args):
+    pt_3d = cmds.xform(cmds.ls(sl=True)[0], query=True, translation=True)
+    
+    list_cams = cmds.ls(cameras=1)
+    list_cams = [k.split('S')[0] for k in list_cams if 'cam' in k]
+    
+    for c in list_cams:
+        pt_cam = cmds.xform(c, query=True, translation=True)
+        cmds.curve( p=[pt_3d, pt_cam], d=1)
 
     
 ### WINDOW CREATION
@@ -363,7 +406,13 @@ cmds.button(label='Save calibration from cameras', ann='Save calibration from ca
 # Film from cameras
 cmds.button(label='Film from cameras', ann='Film from cameras and save image sequences', width=390, command = filmfromCam_callback)
 # Display videos
-cmds.button(label='Display videos', ann='Display images sequences for illustration purposes', width=390, command = setVidfromSeq_callback)
+filetype = 'png'
+cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 90), (2, 290)])
+scaling_box = cmds.checkBox(label='Apply scaling', ann='Image plane size is invariant in translation in the camera view')
+cmds.button(label='Display videos', ann='Display images sequences for illustration purposes', command = setVidfromSeq_callback)
+
+# Reproject selected 3D points
+cmds.button(label='Reproject selected 3D points', ann='Reproject selected 3D points looks best if you display videos with parameter "Apply scaling" on', width=390, command = reproj_3D)
 
 ## Display window
 cmds.showWindow(window)
