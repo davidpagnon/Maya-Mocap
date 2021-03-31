@@ -84,7 +84,7 @@ Lets you:
 * :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
 
 ### BVH import
-A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH)
+A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH).
 
 ### FBX import
 Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
@@ -93,15 +93,17 @@ Instructions for importing FBX files can be found [at this address](https://www.
 ### C3D to TRC
 `c3d2trc.py` lets you:
 * Convert c3d binary files to trc format.
-* Usage: Open a python interpreter. Type `import c3d2trc`, and then `c3d2trc.c3d2trc('<your_c3d_file>')`
+* Usage: Open a command line in your cloned repository. \
+Type `python c3d2trc -i '<your_c3d_file>`
+or `python c3d2trc.py -i <your_c3d_file> -o <your_trc_file>`.
 * :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.**
 
 ## To-do list
 This repository is meant to get more tools in the future. Please feel free to add your suggestions and/or code!
 Among others, I'd like to add:
-- An Xsens importer
-- An Opensim importer (.osim model, and .mot inverse kinematics)
-- A code for importing one mesh per frame on GPU nodes
+- An Xsens importer.
+- An Opensim importer (.osim model, and .mot inverse kinematics).
+- A code for importing one mesh per frame on GPU nodes.
 
 
 ## Send Us Feedback!
