@@ -8,7 +8,7 @@
     ##################################################
     
     Choose if you only want to display the markers, or also to construct the skeleton.
-    In case you want the skeleton, please refer to the section SKELETON DEFINITION.
+    In case you want the skeleton, please refer to help on function "set_skeleton".
 '''
 
 
@@ -90,9 +90,11 @@ def df_from_trc(trc_path):
     '''
     Retrieve header and data from trc
     '''
-    df_header = pd.read_csv(trc_path, sep="\t", skiprows=1, header=None, nrows=2)
+    # DataRate	CameraRate	NumFrames	NumMarkers	Units	OrigDataRate	OrigDataStartFrame	OrigNumFrames
+    df_header = pd.read_csv(trc_path, sep="\t", skiprows=1, header=None, nrows=2, encoding="ISO-8859-1")
     header = dict(zip(df_header.iloc[0].tolist(), df_header.iloc[1].tolist()))
     
+    # Label1_X  Label1_Y    Label1_Z    Label2_X    Label2_Y
     df_lab = pd.read_csv(trc_path, sep="\t", skiprows=3, nrows=1)
     labels = df_lab.columns.tolist()[2:-1:3]
     labels_XYZ = np.array([[labels[i]+'_X', labels[i]+'_Y', labels[i]+'_Z'] for i in range(len(labels))], dtype='object').flatten()
@@ -149,22 +151,21 @@ def set_markers(data, labels, numFrames):
             cmds.setKeyframe(labels[j], t=i, at='translateX', v=data.iloc[i,3*j+2])
             cmds.setKeyframe(labels[j], t=i, at='translateY', v=data.iloc[i,3*j])
             cmds.setKeyframe(labels[j], t=i, at='translateZ', v=data.iloc[i,3*j+1])
-    
 
+            
 def print_skeleton():
     '''
     Prints skeleton.
     '''
     for pre, _, node in RenderTree(root):
         print("%s%s" % (pre, node.name))
-        
 
+        
 def set_skeleton(data, str_cnt, numFrames):
     '''
     Set skeleton from trc
     In case you're not using the model body_25b from openpose, you need to modify the section SKELETON DEFINITION
     '''
-        
     # Create joints
     cmds.select(None)
     cmds.joint(name = root.name+str_cnt)
@@ -174,10 +175,6 @@ def set_skeleton(data, str_cnt, numFrames):
             cmds.joint(name = node.name+str_cnt)
     cmds.select('CHipJ'+str_cnt, hi=True)
     jointsJ = cmds.ls(sl=1)
-    
-    
-    # Hip center (CHipJ) is needed as a root joint, although it's not given by body_25b model.
-    # We will define it further down as the midpoint between the right and the left joint.
     
     # Place and orient joints
     for i in range(numFrames):
@@ -199,7 +196,7 @@ def set_skeleton(data, str_cnt, numFrames):
                 cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
                 cmds.setKeyframe(jointsJ[j], t=i)
 
-                
+
 def trc_callback(*arg):
     '''
     Inputs checkbox choices and trc path
@@ -236,3 +233,4 @@ markers_box = cmds.checkBox(label='Display markers', ann='Display markers as loc
 skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
 cmds.button(label='Import trc', ann='Import and display trc', command = trc_callback)
 cmds.showWindow(window)
+
