@@ -27,7 +27,8 @@
 7. [To-do list](#to-do-list)
 8. [Send Us Feedback!](#send-us-feedback)
 9. [Contributers](#contributers)
-10. [License](#license)
+10. [Citation](#citation)
+11. [License](#license)
 
 ## How to
 
@@ -116,6 +117,18 @@ This library is open source for research purposes, and I want to improve it! So 
 David Pagnon (maintainer), contact@david-pagnon.com\
 Lionel Reveret, lionel.reveret@inria.fr\
 Thibault Goyallon, thibault.goyallon@inria.fr
+
+## Citation
+If you find our work useful in your research, please cite it.
+<!-- our paper [RFC] https://www.ye-yuan.com/rfc
+```
+@inproceedings{yuan2020residual,
+  title={Residual Force Control for Agile Human Behavior Imitation and Extended Motion Synthesis},
+  author={Yuan, Ye and Kitani, Kris},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2020}
+}
+``` -->
 
 ## License
 The code found on this repository is free to use, edit, and redistribute under the BSD-3 licensing terms.
