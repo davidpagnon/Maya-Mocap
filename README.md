@@ -8,7 +8,8 @@
 
 # Maya Mocap
 
-**[Maya Mocap](https://github.com/davidpagnon/Maya-Mocap)** is a collection of open-source tools for Motion Capture in Maya.
+**[Maya Mocap](https://github.com/davidpagnon/Maya-Mocap)** is a collection of open-source tools for Motion Capture in Maya.\
+Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
 
 
 
@@ -22,6 +23,7 @@
     3. [C3D import](#c3d-import)
     4. [BVH import](#bvh-import)
     5. [FBX import](#fbx-import)
+    6. [OBJ sequence import](#obj-sequence-import)
 6. [Others](#others)
     1. [C3D to TRC](#c3d-to-trc)
 7. [To-do list](#to-do-list)
@@ -45,7 +47,7 @@
 
   3. Add each piece of code to your shelf as an executable button.\
 Click on 'Create a new shelf', and then edit it by clicking on 'Shelf editor'.\
-Under 'Command' tab, select 'Python', and type 
+Under 'Command' tab, select 'Python', and type: 
     
        ```
        filename = "PATH_TO_YOUR_SCRIPT.py"
@@ -54,7 +56,8 @@ Under 'Command' tab, select 'Python', and type
 &emsp;&emsp;N.B.: PATH_TO_YOUR_SCRIPT must be written with forward slashes.
 
 ![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
-![image](https://user-images.githubusercontent.com/54667644/111801482-4a3b3700-88cd-11eb-8d47-952bc40f0106.png)
+![image](https://user-images.githubusercontent.com/54667644/113867450-d8a92700-97ae-11eb-8635-6330058c18f4.png)
+![image](https://user-images.githubusercontent.com/54667644/113867649-17d77800-97af-11eb-92db-d5224b747d76.png)
 
 ## Camera toolbox
 `maya_camToolbox.py` is a toolbox for various operations on cameras in Maya.\
@@ -63,9 +66,13 @@ Lets you:
 * or set cameras from calibration file (.toml).
 * save a calibration file from cameras in scene.
 * film image sequences from the cameras in scene.
-* display films in scene.
+* display image sequences in scene.
+* reproject selected objects on image camera planes.
+* display 3D path of selected objects (due to a bug in Maya 2018, works only for "all frames" in this version).
 
-![image](https://user-images.githubusercontent.com/54667644/111811597-84113b00-88d7-11eb-803f-1b9726523793.png)
+![image](https://user-images.githubusercontent.com/54667644/113886128-b7e9cd00-97c0-11eb-99d5-35e6ceb51b7a.png)
+![image](https://user-images.githubusercontent.com/54667644/113885480-28dcb500-97c0-11eb-85c4-cfa0edeee5ba.png)
+
 
 ## Imports
 
@@ -79,6 +86,7 @@ Lets you:
 * Import trc files.
 * Choose if you only want to display the markers, or also to construct the skeleton.
 * In case you want the skeleton (and it's not Openpose body_25b), please refer to the section SKELETON DEFINITION.
+
 ![image](https://user-images.githubusercontent.com/54667644/113013546-176e2a00-917c-11eb-977c-2cf9dc8513cb.png)
 
 ### C3D import
@@ -94,6 +102,11 @@ A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on th
 
 ### FBX import
 Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
+
+### OBJ sequence import
+...Coming soon...
+* Lets you import a sequence of textered obj files.
+* Also works if they have a different number of vertices and faces.
 
 ## Others
 ### C3D to TRC
