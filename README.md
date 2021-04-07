@@ -55,9 +55,9 @@ Under 'Command' tab, select 'Python', and type:
        ```
 &emsp;&emsp;N.B.: PATH_TO_YOUR_SCRIPT must be written with forward slashes.
 
-![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
-![image](https://user-images.githubusercontent.com/54667644/113867450-d8a92700-97ae-11eb-8635-6330058c18f4.png)
-![image](https://user-images.githubusercontent.com/54667644/113867649-17d77800-97af-11eb-92db-d5224b747d76.png)
+&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
+&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/113867450-d8a92700-97ae-11eb-8635-6330058c18f4.png)\
+&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/113867649-17d77800-97af-11eb-92db-d5224b747d76.png)
 
 ## Camera toolbox
 `maya_camToolbox.py` is a toolbox for various operations on cameras in Maya.\
