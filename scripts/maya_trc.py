@@ -99,8 +99,7 @@ def df_from_trc(trc_path):
     labels_XYZ = np.array([[labels[i]+'_X', labels[i]+'_Y', labels[i]+'_Z'] for i in range(len(labels))], dtype='object').flatten()
     labels_FTXYZ = np.concatenate((['Frame#','Time'], labels_XYZ))
     
-    data_df = pd.read_csv(trc_path, sep="\t", skiprows=5, index_col=False, header=None, names=labels_FTXYZ)
-    data = data_df.iloc[:,2:] # Remove columns 'Frame#' and 'Time'
+    data = pd.read_csv(trc_path, sep="\t", skiprows=5, index_col=False, header=None, names=labels_FTXYZ)
     
     return header, data
     
@@ -125,15 +124,15 @@ def analyze_data(data):
     '''
     Get frame number, labels, and increment in case of previous imports
     '''
-    numFrames = data.shape[0]
+    rangeFrames = range(data['Frame#'].iloc[0], data['Frame#'].iloc[-1]+1)
     labels_raw = data.columns
     labels = [labels_raw[2::3][i][:-2] for i in range(len(labels_raw[2::3]))]
     str_cnt, labels = increment_labels(labels)
     
-    return labels, str_cnt, numFrames
+    return labels, str_cnt, rangeFrames
 
     
-def set_markers(data, labels, numFrames):
+def set_markers(data, labels, rangeFrames):
     '''
     Set markers from trc
     '''
@@ -145,11 +144,12 @@ def set_markers(data, labels, numFrames):
         else:
             cmds.instance(labels[0], n=labels[j])
     # Place markers
-    for i in range(numFrames):
+    firstFrame = rangeFrames[0]
+    for i in rangeFrames:
         for j in range(len(labels)):
-            cmds.setKeyframe(labels[j], t=i, at='translateX', v=data.iloc[i,3*j+2])
-            cmds.setKeyframe(labels[j], t=i, at='translateY', v=data.iloc[i,3*j])
-            cmds.setKeyframe(labels[j], t=i, at='translateZ', v=data.iloc[i,3*j+1])
+            cmds.setKeyframe(labels[j], t=i, at='translateX', v=data.iloc[i-firstFrame,3*j+2 +2])
+            cmds.setKeyframe(labels[j], t=i, at='translateY', v=data.iloc[i-firstFrame,3*j +2])
+            cmds.setKeyframe(labels[j], t=i, at='translateZ', v=data.iloc[i-firstFrame,3*j+1 +2])
 
             
 def print_skeleton():
@@ -160,7 +160,7 @@ def print_skeleton():
         print("%s%s" % (pre, node.name))
 
         
-def set_skeleton(data, str_cnt, numFrames):
+def set_skeleton(data, str_cnt, rangeFrames):
     '''
     Set skeleton from trc
     In case you're not using the model body_25b from openpose, you need to modify the section SKELETON DEFINITION
@@ -177,21 +177,22 @@ def set_skeleton(data, str_cnt, numFrames):
     jointsJ = cmds.ls(sl=1)
     
     # Place and orient joints
-    for i in range(numFrames):
+    firstFrame = rangeFrames[0]
+    for i in rangeFrames:
         for j in range(len(jointsJ)): # place joints
             if j == 0 and not root.name[:-1] in data.columns: #If model has no root, take midpoint of hips
                 RHip, LHip = root.children[0].name[:-1], root.children[1].name[:-1]
-                jointCoordX = np.add(data.loc[i,RHip+'_Z'], data.loc[i,LHip+'_Z']) / 2
-                jointCoordY = np.add(data.loc[i,RHip+'_X'], data.loc[i,LHip+'_X']) / 2
-                jointCoordZ = np.add(data.loc[i,RHip+'_Y'], data.loc[i,LHip+'_Y']) / 2
+                jointCoordX = np.add(data.loc[i-firstFrame,RHip+'_Z'], data.loc[i-firstFrame,LHip+'_Z']) / 2
+                jointCoordY = np.add(data.loc[i-firstFrame,RHip+'_X'], data.loc[i-firstFrame,LHip+'_X']) / 2
+                jointCoordZ = np.add(data.loc[i-firstFrame,RHip+'_Y'], data.loc[i-firstFrame,LHip+'_Y']) / 2
             else:
                 jnt =  re.sub(r'[0-9]', '', jointsJ[j])[:-1] # take off numbers + letter J from joint name
-                jointCoordX = data.loc[i,jnt+'_Z']
-                jointCoordY = data.loc[i,jnt+'_X']
-                jointCoordZ = data.loc[i,jnt+'_Y']
+                jointCoordX = data.loc[i-firstFrame,jnt+'_Z']
+                jointCoordY = data.loc[i-firstFrame,jnt+'_X']
+                jointCoordZ = data.loc[i-firstFrame,jnt+'_Y']
             cmds.move(jointCoordX, jointCoordY, jointCoordZ, jointsJ[j], a=True)
             cmds.setKeyframe(jointsJ[j], t=i)
-        if i == 0:  # orient joints
+        if i == firstFrame:  # orient joints
             for j in range(1,len(jointsJ)):
                 cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
                 cmds.setKeyframe(jointsJ[j], t=i)
@@ -210,22 +211,22 @@ def trc_callback(*arg):
     trc_path = cmds.fileDialog2(fileFilter=filter, dialogStyle=2, cap="Open File", fm=1)[0]
     
     _, data = df_from_trc(trc_path)
-    labels, str_cnt, numFrames = analyze_data(data)
+    labels, str_cnt, rangeFrames = analyze_data(data)
     cmds.group(empty=True, name='TRC'+str_cnt)
     
     markers_check = cmds.checkBox(markers_box, query=True, value=True)
     if markers_check == True:
-        set_markers(data, labels, numFrames)
+        set_markers(data, labels, rangeFrames)
         cmds.group(cmds.ls(labels), n='markers'+str_cnt)
         cmds.parent('markers'+str_cnt, 'TRC'+str_cnt)
 
     skeleton_check = cmds.checkBox(skeleton_box, query=True, value=True)
     if skeleton_check == True:
         print_skeleton()
-        set_skeleton(data, str_cnt, numFrames)
+        set_skeleton(data, str_cnt, rangeFrames)
         cmds.parent(root.name+str_cnt, 'TRC'+str_cnt)
         
-    cmds.playbackOptions(minTime=0, maxTime=numFrames)
+    cmds.playbackOptions(minTime=rangeFrames[0], maxTime=rangeFrames[-1])
     cmds.playbackOptions(playbackSpeed = 1)
     
    
