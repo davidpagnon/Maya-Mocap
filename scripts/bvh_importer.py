@@ -6,6 +6,7 @@
 # 
 # <license>
 # BVH Importer script for Maya.
+# Slightly adapted by David Pagnon to be made compatible with python 3 (Maya 2022 and above).
 # Copyright (C) 2012  Jeroen Hoolmans
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -27,8 +28,8 @@ __copyright__ 	= "Copyright 2012, Jeroen Hoolmans"
 __credits__ 	= ["Jeroen Hoolmans"]
 __license__ 	= "GPL"
 __version__ 	= "1.0.1"
-__maintainer__ 	= "Jeroen Hoolmans"
-__email__ 		= "jhoolmans@gmail.com"
+__maintainer__ 	= "Jeroen Hoolmans", "David Pagnon"
+__email__ 		= ["jhoolmans@gmail.com", "contact@david-pagnon.com"]
 __status__ 		= "Production"
 
 import pymel.core as pm
@@ -184,7 +185,7 @@ class BVHImporterDialog(object):
 		
 		with open(self._filename) as f:
 			# Check to see if the file is valid (sort of)
-			if not f.next().startswith("HIERARCHY"):
+			if not f.readline().startswith("HIERARCHY"):
 				mc.error("No valid .bvh file selected.")
 				return False
 			
@@ -235,7 +236,7 @@ class BVHImporterDialog(object):
 					if "CHANNELS" in line:
 						chan = line.strip().split(" ")
 						if self._debug:
-							print chan
+							print(chan)
 						
 						# Append the channels that are animated
 						for i in range(int(chan[1]) ):
@@ -244,7 +245,7 @@ class BVHImporterDialog(object):
 					if "OFFSET" in line:
 						offset = line.strip().split(" ")
 						if self._debug:
-							print offset
+							print( offset)
 						jntName = str(myParent)
 						
 						# When End Site is reached, name it "_tip"
@@ -269,7 +270,7 @@ class BVHImporterDialog(object):
 					
 					if self._debug:
 						if myParent is not None:
-							print "parent: %s" % myParent._fullPath()
+							print( "parent: %s" % myParent._fullPath())
 							
 				else:
 					# We don't really need to use Framecount and time(since Python handles file reads nicely)
@@ -279,13 +280,13 @@ class BVHImporterDialog(object):
 							if data[0] == "": data.pop(0)
 						
 						if self._debug:
-							print "Animating.."
-							print "Data size: %d" % len(data)
-							print "Channels size: %d" % len(self._channels)
+							print( "Animating..")
+							print( "Data size: %d" % len(data))
+							print( "Channels size: %d" % len(self._channels))
 						# Set the values to channels
 						for x in range(0, len(data) - 1 ):
 							if self._debug:
-								print "Set Attribute: %s %f" % (self._channels[x], float(data[x]))
+								print( "Set Attribute: %s %f" % (self._channels[x], float(data[x])))
 							mc.setKeyframe(self._channels[x], time=frame, value=float(data[x]))
 						
 						frame = frame + 1

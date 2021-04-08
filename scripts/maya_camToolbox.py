@@ -449,76 +449,76 @@ def path_3d(*args):
 
   
 ### WINDOW CREATION
-window = cmds.window(title='Camera toolbox')
+def cam_window():
+    global number_field, distance_field, width_field, height_field, distance_field, focal_field, disto_field, pxsize_field, binning_field
+    global extension_field, scaling_box
+    global allFrames_box, pre_field, post_field
 
-## CAMERA SPECS
-cmds.columnLayout(width=390)
-cmds.text(label='CAMERA SPECS', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
-# Camera number (only lets us set the slider to 2,4,8,16,32,64])
-number_field = cmds.intSliderGrp('camNb', label='Camera number', field=True, value=8, maxValue=64,
-   cc='cmds.intSliderGrp(\'camNb\', edit=True, value= '\
-   'min([2,4,8,16,32,64], key=lambda x:abs(x-'\
-   'cmds.intSliderGrp(\'camNb\', query=True, value=True) )))')
-# Cameras distance (m)
-distance_field = cmds.textFieldGrp(label='Distance (m)', text='4.5')
-# Image resolution (px)
-cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 190), (2, 190)])
-width_field = cmds.textFieldGrp(label='Resolution width (px)', text='1280')
-height_field = cmds.textFieldGrp(label='Resolution height (px)', text='768')
-# Focal length (mm)
-cmds.columnLayout(width=390)
-focal_field = cmds.textFieldGrp(label='Focal length (mm)', text='9')
-# Distortion
-disto_field = cmds.textFieldGrp(label='Distortion [-0.2, 2.0]', text='0')
-# Pixel size
-pxsize_field = cmds.textFieldGrp(label='Pixel size (um)', text='5.54')
-# Binning factor
-binning_field = cmds.textFieldGrp(label='Binning factor', text='1')
+    window = cmds.window(title='Camera toolbox')
 
-## BUTTONS
-# CAMERA SPECS
-cmds.columnLayout(width=390)
-# Set cameras from specs
-cmds.button(label='Set cameras from specs', ann='Set cameras in scene from values given in specifications fields', width=390, command = setCamsfromSpecs_callback)
-cmds.separator(height=20)
+    ## CAMERA SPECS
+    cmds.columnLayout(width=390)
+    cmds.text(label='CAMERA SPECS', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
+    # Camera number (only lets us set the slider to 2,4,8,16,32,64])
+    number_field = cmds.intSliderGrp('camNb', label='Camera number', field=True, value=8, maxValue=64,
+       cc='cmds.intSliderGrp(\'camNb\', edit=True, value= '\
+       'min([2,4,8,16,32,64], key=lambda x:abs(x-'\
+       'cmds.intSliderGrp(\'camNb\', query=True, value=True) )))')
+    # Cameras distance (m)
+    distance_field = cmds.textFieldGrp(label='Distance (m)', text='4.5')
+    # Image resolution (px)
+    cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 190), (2, 190)])
+    width_field = cmds.textFieldGrp(label='Resolution width (px)', text='1280')
+    height_field = cmds.textFieldGrp(label='Resolution height (px)', text='768')
+    # Focal length (mm)
+    cmds.columnLayout(width=390)
+    focal_field = cmds.textFieldGrp(label='Focal length (mm)', text='9')
+    # Distortion
+    disto_field = cmds.textFieldGrp(label='Distortion [-0.2, 2.0]', text='0')
+    # Pixel size
+    pxsize_field = cmds.textFieldGrp(label='Pixel size (um)', text='5.54')
+    # Binning factor
+    binning_field = cmds.textFieldGrp(label='Binning factor', text='1')
 
-# OTHER CAMERA ACTIONS
-cmds.text(label='OTHER CAMERA ACTIONS', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
-# Set cameras from calib
-cmds.button(label='Set cameras from calibration file', ann='Set cameras in scene from chosen .toml calibration file', width=390, command = setCamsfromCal_callback)
-# Save calibration
-cmds.button(label='Save calibration from cameras', ann='Save calibration from cameras in .toml file', width=390, command = saveCalfromCam_callback)
-# Film from cameras
-cmds.button(label='Film from cameras', ann='Film from cameras and save image sequences', width=390, command = filmfromCam_callback)
-# Display videos
-cmds.rowColumnLayout(numberOfColumns=5, columnWidth=[(1,90), (2, 30), (3,5), (4, 95), (5,160)])
-cmds.text(label='Image extension')
-extension_field = cmds.textField(text='png', width=30)
-cmds.text(label=' ', backgroundColor=[.5,.5,.5])
-scaling_box = cmds.checkBox(label='Apply scaling', backgroundColor=[.5,.5,.5], ann='Image plane size is invariant in translation in the camera view')
-cmds.button(label='Display videos', ann='Display images sequences for illustration purposes', command = setVidfromSeq_callback)
+    ## BUTTONS
+    # CAMERA SPECS
+    cmds.columnLayout(width=390)
+    # Set cameras from specs
+    cmds.button(label='Set cameras from specs', ann='Set cameras in scene from values given in specifications fields', width=390, command = setCamsfromSpecs_callback)
+    cmds.separator(height=20)
 
-# OTHER ACTIONS ON OBJECTS
-cmds.columnLayout(width=390)
-cmds.separator(height=20)
-cmds.text(label='GOODIES', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
-# Reproject selected 3D point
-cmds.button(label='Reproject selected 3D points', ann='Reproject selected 3D points works only if you have cameras in scene, and looks best if you display videos with parameter "Apply scaling" on', width=390, command = reproj_3D)
-# Display path of selected 3D point
-cmds.rowColumnLayout(numberOfColumns=5, columnWidth=[(1,200), (2, 70), (3,55), (4,25), (5,25)])
-cmds.button(label='Display path of selected 3D points for ', ann='Display path of selected 3D points. Only works for "all frames" in Maya 2018 due to a bug in the version.', command = path_3d)
-cmds.radioCollection()
-allFrames_box = cmds.radioButton(label='all frames', select=True, cc=textOff)
-cmds.radioButton(label='frames')
-pre_field = cmds.textField(text='-50', enable=False)
-post_field = cmds.textField(text='10', enable=False)
-## Display window
-cmds.showWindow(window)
+    # OTHER CAMERA ACTIONS
+    cmds.text(label='OTHER CAMERA ACTIONS', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
+    # Set cameras from calib
+    cmds.button(label='Set cameras from calibration file', ann='Set cameras in scene from chosen .toml calibration file', width=390, command = setCamsfromCal_callback)
+    # Save calibration
+    cmds.button(label='Save calibration from cameras', ann='Save calibration from cameras in .toml file', width=390, command = saveCalfromCam_callback)
+    # Film from cameras
+    cmds.button(label='Film from cameras', ann='Film from cameras and save image sequences', width=390, command = filmfromCam_callback)
+    # Display videos
+    cmds.rowColumnLayout(numberOfColumns=5, columnWidth=[(1,90), (2, 30), (3,5), (4, 95), (5,160)])
+    cmds.text(label='Image extension')
+    extension_field = cmds.textField(text='png', width=30)
+    cmds.text(label=' ', backgroundColor=[.5,.5,.5])
+    scaling_box = cmds.checkBox(label='Apply scaling', backgroundColor=[.5,.5,.5], ann='Image plane size is invariant in translation in the camera view')
+    cmds.button(label='Display videos', ann='Display images sequences for illustration purposes', command = setVidfromSeq_callback)
 
+    # OTHER ACTIONS ON OBJECTS
+    cmds.columnLayout(width=390)
+    cmds.separator(height=20)
+    cmds.text(label='GOODIES', backgroundColor=[.5,.5,.5], font='boldLabelFont', width=390, height=20)
+    # Reproject selected 3D point
+    cmds.button(label='Reproject selected 3D points', ann='Reproject selected 3D points works only if you have cameras in scene, and looks best if you display videos with parameter "Apply scaling" on', width=390, command = reproj_3D)
+    # Display path of selected 3D point
+    cmds.rowColumnLayout(numberOfColumns=5, columnWidth=[(1,200), (2, 70), (3,55), (4,25), (5,25)])
+    cmds.button(label='Display path of selected 3D points for ', ann='Display path of selected 3D points. Only works for "all frames" in Maya 2018 due to a bug in the version.', command = path_3d)
+    cmds.radioCollection()
+    allFrames_box = cmds.radioButton(label='all frames', select=True, cc=textOff)
+    cmds.radioButton(label='frames')
+    pre_field = cmds.textField(text='-50', enable=False)
+    post_field = cmds.textField(text='10', enable=False)
+    ## Display window
+    cmds.showWindow(window)
 
-
-
-
-
-
-
+if __name__ == "__main__":
+    cam_window()

@@ -4,12 +4,15 @@
 
 '''
     ##################################################
-    ## Convert c3d files to trc and import them     ##
+    ## Convert c3d files to trc                     ##
     ##################################################
     
-    Choose if you only want to display the markers, or also to construct the skeleton.
-    In case you want the skeleton, please refer to help on function "set_skeleton".
+    Converts c3d files to trc files.
     Beware that it only allows you to retrieve 3D points, you won't get analog data nor computed data sucha as angles or powers with this code. 
+    
+    Usage: 
+    run c3d2trc -i <input_file>.trc
+    run c3d2trc -i <input_file>.trc -o <input_file>.c3d
 '''
 
 
@@ -37,6 +40,7 @@ def c3d2trc(*args):
     /!\ Only point data are retrieved. Analog data (force plates, emg) and computed data (angles, powers, etc) will be lost
     '''
     c3d_path = args[0]['input']
+    
     if args[0]['output']:
         trc_path = args[0]['output']
     else:
@@ -51,7 +55,7 @@ def c3d2trc(*args):
     header_c3d = dict(zip(label_item, value_item))
     
     # c3d data: reads 3D points (no analog data) and takes off computed data
-    labels = reader.point_labels
+    labels = reader.point_labelsrun
     index_labels_markers = [i for i, s in enumerate(labels) if 'Angle' not in s and 'Power' not in s and 'Force' not in s and 'Moment' not in s and 'GRF' not in s]
     labels_markers = [labels[ind] for ind in index_labels_markers]
     

@@ -7,6 +7,7 @@
     ## Convert c3d files to trc and import them     ##
     ##################################################
     
+    /!\ Uses c3d2trc.py
     Choose if you only want to display the markers, or also to construct the skeleton.
     In case you want the skeleton, please refer to help on function "set_skeleton".
     Beware that it only allows you to retrieve 3D points, you won't get analog data from this code. 
@@ -14,8 +15,8 @@
 
 
 ## INIT
-import c3d2trc
-import maya_trc
+from c3d2trc import c3d2trc
+from maya_trc import *
 
 
 ## AUTHORSHIP INFORMATION
@@ -39,8 +40,9 @@ def c3d_callback(*arg):
     '''
     filter = "C3D files (*.c3d);; All Files (*.*)"
     c3d_path = cmds.fileDialog2(fileFilter=filter, dialogStyle=2, cap="Open File", fm=1)[0]
+    # arg_c3d = {'input': c3d_path}
     
-    c3d2trc(c3d_path)
+    # c3d2trc(arg_c3d)
     trc_path = c3d_path.replace('.c3d', '.trc')
     
     _, data = df_from_trc(trc_path)
@@ -63,9 +65,16 @@ def c3d_callback(*arg):
 
 
 ## WINDOW CREATION
-window = cmds.window(title='Import C3D', width=300)
-cmds.columnLayout( adjustableColumn=True )
-markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
-skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
-cmds.button(label='Import c3d', ann='Import and display c3d', command = c3d_callback)
-cmds.showWindow(window)
+def c3d_window():
+    global markers_box
+    global skeleton_box
+    
+    window = cmds.window(title='Import C3D', width=300)
+    cmds.columnLayout( adjustableColumn=True )
+    markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
+    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
+    cmds.button(label='Import c3d', ann='Convert c3d to trc, and import resulting trc', command = c3d_callback)
+    cmds.showWindow(window)
+
+if __name__ == "__main__":
+    c3d_window()

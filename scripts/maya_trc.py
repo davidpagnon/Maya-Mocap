@@ -41,6 +41,9 @@ If you want to import the skeleton, you need to adapt it to your own skeleton hi
    Example : trc label = 'CHip' --> joint name = 'CHipJ'
 2. Then you need to make sure your skeleton hierarchy is respected.
    Your joint names must be defined from the root one to the more distal ones.
+3. Finally, reload the module: 
+  `from imp import reload
+   reload maya_trc`
 '''
 root = Node("CHipJ", children=[
     Node("RHipJ", children=[
@@ -227,10 +230,16 @@ def trc_callback(*arg):
     
    
 ## WINDOW CREATION
-window = cmds.window(title='Import TRC', width=300)
-cmds.columnLayout( adjustableColumn=True )
-markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
-skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
-cmds.button(label='Import trc', ann='Import and display trc', command = trc_callback)
-cmds.showWindow(window)
+def trc_window():
+    global markers_box
+    global skeleton_box
+    
+    window = cmds.window(title='Import TRC', width=300)
+    cmds.columnLayout( adjustableColumn=True )
+    markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
+    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
+    cmds.button(label='Import trc', ann='Import and display trc', command = trc_callback)
+    cmds.showWindow(window)
 
+if __name__ == "__main__":
+    trc_window()
