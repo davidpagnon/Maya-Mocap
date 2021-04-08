@@ -36,28 +36,26 @@ Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
 
   1. First you need to install python packages in Maya.
   Open a command prompt (Windows -> cmd).\
-  Type the following (replace `<year>` with your version):
+  Type the following (replace `<YEAR>` with your version):
     
        ```
-       "C:\Program Files\Autodesk\Maya<year>\bin\mayapy" -m pip install opencv-python pandas c3d numpy anytree toml
+       "C:\Program Files\Autodesk\Maya<YEAR>\bin\mayapy" -m pip install opencv-python pandas c3d numpy anytree toml
        ```
 &emsp;&emsp;If it does not work, check [there](http://mgland.com/qa/en/?qa=1748/how-to-use-pip-with-maya).
   
   2. Clone the repository or just download the python piece of code you need.
 
-  3. Add each piece of code to your shelf as an executable button.\
-Click on 'Create a new shelf', and then edit it by clicking on 'Shelf editor'.\
-Under 'Command' tab, select 'Python', and type: 
-    
+  3. Open file at `<PATH_TO_DOCUMENTS_FOLDER>\maya\<YEAR>\maya.env`. Create it if it does't exist.\
+     Type the following (replace what's in capital letters):
        ```
-       filename = "PATH_TO_YOUR_SCRIPT.py"
-       exec(compile(open(filename, "rb").read(), filename, 'exec'))
+       MAYA_SHELF_PATH = <PATH_TO_MAYA_MOCAP_FOLDER>\shelves
+       PYTHONPATH = <PATH_TO_MAYA_MOCAP_FOLDER>\scripts
+       MAYA_PLUG_IN_PATH = <PATH_TO_MAYA_MOCAP_FOLDER>\plug-ins
        ```
-&emsp;&emsp;N.B.: PATH_TO_YOUR_SCRIPT must be written with forward slashes.
+ 
+ That's it! After opening Maya, you should get a new shelf with new tools ready to be used.\
+ ![image](https://user-images.githubusercontent.com/54667644/114008930-fe900380-9862-11eb-9f97-deab128bd6dd.png)
 
-&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/111802309-1f051780-88ce-11eb-947d-7d88ae05b634.png)\
-&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/113867450-d8a92700-97ae-11eb-8635-6330058c18f4.png)\
-&emsp;&emsp;![image](https://user-images.githubusercontent.com/54667644/113867649-17d77800-97af-11eb-92db-d5224b747d76.png)
 
 ## Camera toolbox
 `maya_camToolbox.py` is a toolbox for various operations on cameras in Maya.\
@@ -98,7 +96,8 @@ Lets you:
 * :warning: Beware that it only allows you to retrieve 3D points, you won't get analog data with this code.
 
 ### BVH import
-A free BVH (BioVision Hierarchy) importer by Jeroen Hoolmans can be found [on this repo](https://github.com/jhoolmans/mayaImporterBVH).
+Jeroen Hoolmans wrote an awesome free [BVH (BioVision Hierarchy) importer](https://github.com/jhoolmans/mayaImporterBVH).\
+It is slightly adapted here to be made compatibly with python 3 (Maya 2022 and above).
 
 ### FBX import
 Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
@@ -122,7 +121,6 @@ This repository is meant to get more tools in the future. Please feel free to ad
 Among others, I'd like to add:
 - An Xsens importer.
 - An Opensim importer (.osim model, and .mot inverse kinematics).
-- A code for importing one mesh per frame on GPU nodes.
 
 
 ## Send Us Feedback!
@@ -134,7 +132,6 @@ This library is open source for research purposes, and I want to improve it! So 
 ## Contributers
 David Pagnon (maintainer), contact@david-pagnon.com\
 Lionel Reveret, lionel.reveret@inria.fr\
-Thibault Goyallon, thibault.goyallon@inria.fr
 
 ## Citation
 If you find our work useful in your research, please cite it.
