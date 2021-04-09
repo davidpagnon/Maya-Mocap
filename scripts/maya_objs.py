@@ -7,8 +7,9 @@
     ## Import OBJ sequence                          ##
     ##################################################
     
-    Displays a node streaming OBJ files with their textures.
-    These OBJ don't need to have the same amount of vertices along time.
+    Displays a sequence of OBJ files in an "objStreamNode" (uses plug-in `objStreamNode`).
+    These OBJ don't need to be coherent in time (e.g. vertex number, etc).
+    Assign textures to the meshes.
     Uses the plug-in objStreamNode.py
 '''
 
