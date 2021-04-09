@@ -15,7 +15,7 @@
 
 
 ## INIT
-from c3d2trc import c3d2trc
+from c3d2trc import c3d2trc_func
 from maya_trc import *
 
 
@@ -40,32 +40,34 @@ def c3d_callback(*arg):
     '''
     filter = "C3D files (*.c3d);; All Files (*.*)"
     c3d_path = cmds.fileDialog2(fileFilter=filter, dialogStyle=2, cap="Open File", fm=1)[0]
-    # arg_c3d = {'input': c3d_path}
-    
-    # c3d2trc(arg_c3d)
     trc_path = c3d_path.replace('.c3d', '.trc')
     
+    c3d2trc_func([c3d_path])
+    
     _, data = df_from_trc(trc_path)
-    labels, str_cnt, numFrames = analyze_data(data)
+    labels, str_cnt, rangeFrames = analyze_data(data)
     cmds.group(empty=True, name='C3D'+str_cnt)
     
     markers_check = cmds.checkBox(markers_box, query=True, value=True)
     if markers_check == True:
-        set_markers(data, labels, numFrames)
+        set_markers(data, labels, rangeFrames)
         cmds.group(cmds.ls(labels), n='markers'+str_cnt)
         cmds.parent('markers'+str_cnt, 'C3D'+str_cnt)
 
     skeleton_check = cmds.checkBox(skeleton_box, query=True, value=True)
     if skeleton_check == True:
-        set_skeleton(data, str_cnt, numFrames)
+        set_skeleton(data, str_cnt, rangeFrames)
         cmds.parent(root+str_cnt, 'C3D'+str_cnt)
         
-    cmds.playbackOptions(minTime=0, maxTime=numFrames)
+    cmds.playbackOptions(minTime=rangeFrames[0], maxTime=rangeFrames[-1])
     cmds.playbackOptions(playbackSpeed = 1)
 
 
 ## WINDOW CREATION
 def c3d_window():
+    '''
+    Creates and displays window
+    '''
     global markers_box
     global skeleton_box
     

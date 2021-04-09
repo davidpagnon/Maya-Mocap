@@ -232,6 +232,9 @@ def trc_callback(*arg):
    
 ## WINDOW CREATION
 def trc_window():
+    '''
+    Creates and displays window
+    '''
     global markers_box
     global skeleton_box
     

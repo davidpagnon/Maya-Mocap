@@ -23,7 +23,7 @@ import glob
 import numpy as np
 import toml
 import cv2
-import re
+import maya_utils
 
 
 ## AUTHORSHIP INFORMATION
@@ -61,64 +61,6 @@ def retrieveCal(path):
         P[cam] = Kh.dot(H)
         
     return S, D, K, R, T, P
-
-
-def increment_name(name):   
-    '''
-    Increment object names starting with str
-    '''
-    name = name.split('|')[-1]
-    name_root = re.sub(r'[|0-9]', '', name)
-    objs = cmds.ls('*'+name_root+'*', type='transform')
-    objs = [obj.split('|')[-1] for obj in objs]
-    cnt=1
-    while name in objs:
-        name_root = re.sub(r'[|0-9]', '', name)
-        name = name_root+str(cnt)
-        cnt+=1
-        if cnt==100:
-            break
-    return name
-    
-
-def rename4seq(img_dir, filetype):
-    '''
-    Change image names to comply with 'name.%3d.extension'
-    Maya needs such names to identify image files as a sequence.
-    '''
-    img_files = glob.glob(os.path.join(img_dir, '*.png'))
-    while True:
-        try: 
-            img_files = glob.glob(os.path.join(img_dir, '*.png'))
-            int(os.path.basename(img_files[0]).split('.')[-2]) # verif .XXX.
-            break
-        except:
-            # change name?
-            confirm = cmds.confirmDialog(title='Confirm', message='Rename files to help Maya identify them as a sequence?', button=['Yes','No'], defaultButton='Yes', cancelButton='No', dismissString='No')
-            if confirm == 'No':
-                break
-            # change name.
-            for i, f in enumerate(img_files):
-                os.rename(f, os.path.join(img_dir, os.path.basename(img_dir)+ '.%05d.'%i + filetype))
-            print(img_dir, ': Image files renamed')
-
-    
-def applyImg(plane, filename, sequence=False):
-    '''
-    Apply image (or image sequence) texture to plane.
-    Inspired from https://stackoverflow.com/questions/15268511/maya-python-place-image-on-a-plane.
-    '''
-    shader = cmds.shadingNode('surfaceShader', asShader=True)
-    SG = cmds.sets(empty=True, renderable=True, noSurfaceShader=True, name=shader+"SG")
-    cmds.connectAttr(shader+'.outColor', SG+".surfaceShader", force=True)
-    img = cmds.shadingNode('file', asTexture=True)
-    cmds.setAttr(img+'.fileTextureName', filename, type='string')
-    cmds.connectAttr(img+'.outColor', shader+'.outColor', force=True)
-    
-    cmds.sets(plane, edit=True, forceElement=SG)
-    if sequence:
-        ufe = cmds.setAttr(img+'.useFrameExtension', True)
-        cmds.expression( s='{}.frameExtension=frame'.format(img) )
 
 
 def textOff(*args):
@@ -379,7 +321,7 @@ def setVidfromSeq_callback(*args):
             cmds.setAttr(vidPlane[i]+'.scaleY', distance/(fm*1e-3) )
 
     # Apply img texture to plane
-        applyImg(vidPlane[i], img_files_per_cam[i][0], sequence=True)
+        applyTexture(vidPlane[i], img_files_per_cam[i][0], sequence=True)
 
     panels = cmds.getPanel(type='modelPanel')
     [cmds.modelEditor(pan, e=1, displayTextures=1) for pan in panels]
@@ -450,6 +392,9 @@ def path_3d(*args):
   
 ### WINDOW CREATION
 def cam_window():
+    '''
+    Creates and displays window
+    '''
     global number_field, distance_field, width_field, height_field, distance_field, focal_field, disto_field, pxsize_field, binning_field
     global extension_field, scaling_box
     global allFrames_box, pre_field, post_field

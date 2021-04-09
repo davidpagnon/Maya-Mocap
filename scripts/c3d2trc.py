@@ -34,18 +34,21 @@ __status__ = "Production"
 
 
 ## FUNCTIONS
-def c3d2trc(*args):
+def c3d2trc_func(*args):
     '''
     Convert c3d to trc
     /!\ Only point data are retrieved. Analog data (force plates, emg) and computed data (angles, powers, etc) will be lost
     '''
-    c3d_path = args[0]['input']
-    
-    if args[0]['output']:
-        trc_path = args[0]['output']
-    else:
+    try:
+        c3d_path = args[0]['input'] # invoked with argparse
+        if args[0]['output'] == None:
+            trc_path = c3d_path.replace('.c3d', '.trc')
+        else:
+            trc_path = args[0]['output']
+    except:
+        c3d_path = args[0][0] # invoked as a function
         trc_path = c3d_path.replace('.c3d', '.trc')
-    
+        
     # c3d header
     reader = c3d.Reader(open(c3d_path, 'rb'))
     items_header = str(reader.header).split('\n')
@@ -55,7 +58,7 @@ def c3d2trc(*args):
     header_c3d = dict(zip(label_item, value_item))
     
     # c3d data: reads 3D points (no analog data) and takes off computed data
-    labels = reader.point_labelsrun
+    labels = reader.point_labels
     index_labels_markers = [i for i, s in enumerate(labels) if 'Angle' not in s and 'Power' not in s and 'Force' not in s and 'Moment' not in s and 'GRF' not in s]
     labels_markers = [labels[ind] for ind in index_labels_markers]
     
@@ -99,4 +102,4 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', required=False, help='trc output file name')
     args = vars(parser.parse_args())
     
-    c3d2trc(args)
+    c3d2trc_func(args)
