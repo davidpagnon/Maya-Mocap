@@ -13,21 +13,20 @@ Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
 
 
 
-
 ## Contents
 1. [How to](#how-to)
 2. [Camera toolbox](#camera-toolbox)
-5. [Imports](#imports)
-    1. [Opensim import](#opensim-import)
-    2. [TRC import](#trc-import)
-    3. [C3D import](#c3d-import)
-    4. [BVH import](#bvh-import)
-    5. [FBX import](#fbx-import)
-    6. [OBJ sequence import](#obj-sequence-import)
-6. [Others](#others)
+3. [Imports](#imports)
+    1. [OBJ sequence import](#obj-sequence-import)
+    2. [Opensim import](#opensim-import)
+    3. [TRC import](#trc-import)
+    4. [C3D import](#c3d-import)
+    5. [BVH import](#bvh-import)
+    6. [FBX import](#fbx-import)
+4. [Others](#others)
     1. [C3D to TRC](#c3d-to-trc)
-7. [To-do list](#to-do-list)
-8. [Send Us Feedback!](#send-us-feedback)
+5. [To-do list](#to-do-list)
+6. [Send Us Feedback!](#send-us-feedback)
 9. [Contributers](#contributers)
 10. [Citation](#citation)
 11. [License](#license)
@@ -55,7 +54,7 @@ Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
        ```
  
  That's it! After opening Maya, you should get a new shelf with new tools ready to be used.\
- ![image](https://user-images.githubusercontent.com/54667644/114008930-fe900380-9862-11eb-9f97-deab128bd6dd.png)
+![image](https://user-images.githubusercontent.com/54667644/114212078-b3a8e580-9961-11eb-9b3c-6c69ffd114e3.png)
 
 
 ## Camera toolbox
@@ -75,10 +74,19 @@ Lets you:
 
 ## Imports
 
+### OBJ sequence import
+`maya_objs.py` lets you:
+* Displays a sequence of OBJ files in an "objStreamNode" (uses plug-in `objStreamNode`).
+* These OBJ don't need to be coherent in time (e.g. vertex number, etc).
+* Assign textures to the meshes.
+
+![image](https://user-images.githubusercontent.com/54667644/114210911-51031a00-9960-11eb-8320-d86390c3d4de.png)
+
 ### Opensim import
-...Coming soon...
-* Lets you import .osim model.
-* Lets you animate it with .mot inverse kinematics.
+...Coming soon...\
+`maya_osim.py` lets you:
+* Import an .osim model.
+* Animate it with .mot inverse kinematics.
 
 ### TRC import
 `maya_trc.py` lets you:
@@ -103,10 +111,6 @@ It is slightly adapted here to be made compatibly with python 3 (Maya 2022 and a
 ### FBX import
 Instructions for importing FBX files can be found [at this address](https://www.instructables.com/How-To-Use-Mocap-Files-In-Maya-BVH-or-FBX/).
 
-### OBJ sequence import
-...Coming soon...
-* Lets you import a sequence of textered obj files.
-* Also works if they have a different number of vertices and faces.
 
 ## Others
 ### C3D to TRC
@@ -132,7 +136,7 @@ This library is open source for research purposes, and I want to improve it! So 
 
 ## Contributers
 David Pagnon (maintainer), contact@david-pagnon.com\
-Lionel Reveret, lionel.reveret@inria.fr\
+Lionel Reveret, lionel.reveret@inria.fr
 
 ## Citation
 If you find our work useful in your research, please cite it.
