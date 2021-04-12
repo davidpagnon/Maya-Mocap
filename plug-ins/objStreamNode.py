@@ -90,10 +90,8 @@ class objStreamNode(om.MPxNode):
         # CREATE AND ADD ".fname" ATTRIBUTE:
         stringFn = om.MFnStringData()
         defaultText = stringFn.create("model_%05d.obj")#"seq040.%05d.obj"
-        print(defaultText)
         fnameAttrFn = om.MFnTypedAttribute()
         objStreamNode.aFname = fnameAttrFn.create("fname", "f", om.MFnData.kString, defaultText)
-        print(objStreamNode.aFname)
         om.MPxNode.addAttribute(objStreamNode.aFname)
 
         # DEPENDENCY RELATIONS FOR ".index":
@@ -110,7 +108,6 @@ class objStreamNode(om.MPxNode):
             # READ IN ".fname" DATA:
             fnameDataHandle = data.inputValue(objStreamNode.aFname)
             fname_format = fnameDataHandle.asString()
-            print(fname_format)
 
             # READ IN ".index" DATA:
             indexDataHandle = data.inputValue(objStreamNode.aIndex)
@@ -128,11 +125,11 @@ class objStreamNode(om.MPxNode):
                 nl = len(lines)
                 for line in lines :
                     if line[:2]=='v ' :
-                        pts += [ map(float, line[2:].split()) ]
+                        pts += [ list(map(float, line[2:].split())) ]
                     if line[:3]=='vt ' :
-                        uvs += [ map(float, line[3:].split()) ]
+                        uvs += [ list(map(float, line[3:].split())) ]
                     elif line[:2]=='f ' :
-                        ids = [ map(int,tok.split('/')) for tok in line[2:].split() ]
+                        ids = [ list(map(int,tok.split('/'))) for tok in line[2:].split() ]
                         [va,ta],[vb,tb],[vc,tc] = ids
                         ptsIds += va,vb,vc
                         uvsIds += ta,tb,tc

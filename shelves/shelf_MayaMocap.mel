@@ -8,7 +8,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -41,7 +41,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -74,7 +74,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -107,7 +107,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -140,7 +140,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -173,16 +173,16 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "OBJ stream" 
+        -annotation "Import Stream of Objs" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Obj Stream" 
+        -label "Import Objs" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -197,7 +197,7 @@ global proc shelf_MayaMocap () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "from imp import reload\nimport maya_objs\nreload(maya_objs)\nmaya_objs.objs_window()" 
+        -command "from imp import reload\nimport maya_objs\nreload(maya_objs)\nmaya_objs.objs_window()\n" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
@@ -219,7 +219,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
