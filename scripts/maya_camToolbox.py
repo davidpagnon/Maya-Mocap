@@ -21,7 +21,6 @@ import maya.cmds as cmds
 import os
 import glob
 import numpy as np
-import toml
 import cv2
 import maya_utils
 
@@ -38,31 +37,6 @@ __status__ = "Production"
 
 
 ## FUNCTIONS
-def retrieveCal(path):
-    '''
-    Retrieve calibration parameters from toml file.
-    Output a dialog window to choose calibration file.
-    '''
-    S, D, K, R, T, P = {}, {}, {}, {}, {}, {}
-    Kh, H = [], []
-    cal = toml.load(path)
-    cal_keys = [i for i in cal.keys() if 'metadata' not in i] # exclude metadata key
-    for i, cam in enumerate(cal_keys):
-        S[cam] = np.array(cal[cam]['size'])
-        D[cam] = np.array(cal[cam]['distortions'])
-        
-        K[cam] = np.array(cal[cam]['matrix'])
-        Kh = np.block([K[cam], np.zeros(3).reshape(3,1)])
-        
-        R[cam], _ = cv2.Rodrigues(np.array(cal[cam]['rotation']))
-        T[cam] = np.array(cal[cam]['translation'])
-        H = np.block([[R[cam],T[cam].reshape(3,1)], [np.zeros(3), 1 ]])
-        
-        P[cam] = Kh.dot(H)
-        
-    return S, D, K, R, T, P
-
-
 def textOff(*args):
     '''
     Disable textFields if radioButton checked
@@ -152,7 +126,7 @@ def setCamsfromCal_callback(*args):
     singleFilter = "Toml calibration files (*.toml)"
     path = cmds.fileDialog2(fileFilter=singleFilter, dialogStyle=2, cap="Open Calibration File", fm=1)[0]
     # retrieve calibration
-    S, D, K, R, T, P = retrieveCal(path)
+    S, D, K, R, T, P = maya_utils.retrieveCal(path)
     
     # set cameras
     cams=[]
@@ -287,7 +261,7 @@ def setVidfromSeq_callback(*args):
     
     # Change image names to comply with 'name.XXX.png'
     for img_dir in img_dirs_full:
-        rename4seq(img_dir, filetype)
+        maya_utils.rename4seq(img_dir, filetype)
     img_files_per_cam = [glob.glob(os.path.join(dir,"*."+filetype)) for dir in img_dirs_full]
     
     # Set videos in scene
@@ -303,7 +277,7 @@ def setVidfromSeq_callback(*args):
         W = cmds.camera(c, query=True, horizontalFilmAperture=True) / 39.3701 / binning_factor
         H = cmds.camera(c, query=True, verticalFilmAperture=True) / 39.3701 / binning_factor
         # create image plane
-        vidPlane.append(increment_name('vid_%d' %(i+1)))
+        vidPlane.append(maya_utils.increment_name('vid_%d' %(i+1)))
         vidPlane[i] = cmds.polyPlane(n=vidPlane[i], ax=[0,0,1], w=W, h=H)[0] 
         # set plane at camera locations
         cmds.xform(vidPlane[i], m=camMat)
@@ -321,7 +295,7 @@ def setVidfromSeq_callback(*args):
             cmds.setAttr(vidPlane[i]+'.scaleY', distance/(fm*1e-3) )
 
     # Apply img texture to plane
-        applyTexture(vidPlane[i], img_files_per_cam[i][0], sequence=True)
+        maya_utils.applyTexture(vidPlane[i], img_files_per_cam[i][0], sequence=True)
 
     panels = cmds.getPanel(type='modelPanel')
     [cmds.modelEditor(pan, e=1, displayTextures=1) for pan in panels]
@@ -458,7 +432,7 @@ def cam_window():
     cmds.rowColumnLayout(numberOfColumns=5, columnWidth=[(1,200), (2, 70), (3,55), (4,25), (5,25)])
     cmds.button(label='Display path of selected 3D points for ', ann='Display path of selected 3D points. Only works for "all frames" in Maya 2018 due to a bug in the version.', command = path_3d)
     cmds.radioCollection()
-    allFrames_box = cmds.radioButton(label='all frames', select=True, cc=textOff)
+    allFrames_box = cmds.radioButton(label='all frames', select=True, changeCommand=textOff)
     cmds.radioButton(label='frames')
     pre_field = cmds.textField(text='-50', enable=False)
     post_field = cmds.textField(text='10', enable=False)

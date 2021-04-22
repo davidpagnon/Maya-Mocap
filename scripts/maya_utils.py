@@ -16,6 +16,9 @@
 
 ## INIT
 import maya.cmds as cmds
+import toml
+import numpy as np
+import cv2
 import os
 import glob
 import re
@@ -88,3 +91,28 @@ def applyTexture(shape, filename, sequence=False):
     if sequence:
         ufe = cmds.setAttr(img+'.useFrameExtension', True)
         cmds.expression( s='{}.frameExtension=frame'.format(img) )
+
+
+def retrieveCal(path):
+    '''
+    Retrieve calibration parameters from toml file.
+    Output a dialog window to choose calibration file.
+    '''
+    S, D, K, R, T, P = {}, {}, {}, {}, {}, {}
+    Kh, H = [], []
+    cal = toml.load(path)
+    cal_keys = [i for i in cal.keys() if 'metadata' not in i] # exclude metadata key
+    for i, cam in enumerate(cal_keys):
+        S[cam] = np.array(cal[cam]['size'])
+        D[cam] = np.array(cal[cam]['distortions'])
+        
+        K[cam] = np.array(cal[cam]['matrix'])
+        Kh = np.block([K[cam], np.zeros(3).reshape(3,1)])
+        
+        R[cam], _ = cv2.Rodrigues(np.array(cal[cam]['rotation']))
+        T[cam] = np.array(cal[cam]['translation'])
+        H = np.block([[R[cam],T[cam].reshape(3,1)], [np.zeros(3), 1 ]])
+        
+        P[cam] = Kh.dot(H)
+        
+    return S, D, K, R, T, P

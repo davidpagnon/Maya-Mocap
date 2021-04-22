@@ -8,15 +8,22 @@
     ##################################################
     
     /!\ Uses c3d2trc.py
-    Choose if you only want to display the markers, or also to construct the skeleton.
-    In case you want the skeleton, please refer to help on function "set_skeleton".
     Beware that it only allows you to retrieve 3D points, you won't get analog data from this code. 
+    Choose if you only want to display the markers, or also to construct the skeleton.
+    
+    If you want to use your own custom skeleton hierarchy, please edit the file "skeletons_config.py"
+    Your joint names should be your trc labels + letter J.
+    Example : trc label = 'CHip' --> joint name = 'CHipJ'    
+    
 '''
 
 
 ## INIT
 from c3d2trc import c3d2trc_func
 from maya_trc import *
+import skeletons_config
+from imp import reload
+reload(skeletons_config)
 
 
 ## AUTHORSHIP INFORMATION
@@ -31,6 +38,14 @@ __status__ = "Production"
 
 
 ## FUNCTIONS
+def print_skeleton():
+    '''
+    Prints skeleton.
+    '''
+    for pre, _, node in RenderTree(root):
+        print("%s%s" % (pre, node.name))
+        
+        
 def c3d_callback(*arg):
     '''
     Inputs checkbox choices and trc path
@@ -63,6 +78,19 @@ def c3d_callback(*arg):
     cmds.playbackOptions(playbackSpeed = 1)
 
 
+def skel_callback(*args):
+    '''
+    Inputs skeleton choice 
+    Prints skeleton hierarchy
+    '''
+    global root
+    cmds.checkBox(skeleton_box, edit=True, value=True)
+    skel = cmds.optionMenu(skeleton_choice, query=True, value=True)
+    root = eval('skeletons_config.root_'+skel)
+    print('# Skeleton ' + skel.upper() + ' #')
+    print_skeleton()
+    
+
 ## WINDOW CREATION
 def c3d_window():
     '''
@@ -70,11 +98,23 @@ def c3d_window():
     '''
     global markers_box
     global skeleton_box
+    global skeleton_choice
     
     window = cmds.window(title='Import C3D', width=300)
     cmds.columnLayout( adjustableColumn=True )
     markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
-    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
+    
+    cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1,150), (2, 150)])
+    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Define your custom hierarchy in "skeletons_config.py"')
+    skeleton_choice = cmds.optionMenu(changeCommand = skel_callback)
+    cmds.menuItem(label='body_25b')
+    cmds.menuItem(label='body_25')
+    cmds.menuItem(label='coco')
+    cmds.menuItem(label='body_135')
+    cmds.menuItem(label='custom')
+    
+    cmds.columnLayout(width=390)
+    cmds.rowColumnLayout(numberOfColumns=1, columnWidth=[(1,300)])
     cmds.button(label='Import c3d', ann='Convert c3d to trc, and import resulting trc', command = c3d_callback)
     cmds.showWindow(window)
 

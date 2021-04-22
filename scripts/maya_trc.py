@@ -8,7 +8,11 @@
     ##################################################
     
     Choose if you only want to display the markers, or also to construct the skeleton.
-    In case you want the skeleton, please refer to help on function "set_skeleton".
+    See "set_skeleton" function if the bones are not connecting the joints properly.
+    
+    If you want to use your own custom skeleton hierarchy, please edit the file "skeletons_config.py"
+    Your joint names should be your trc labels + letter J.
+    Example : trc label = 'CHip' --> joint name = 'CHipJ'
 '''
 
 
@@ -17,7 +21,9 @@ import maya.cmds as cmds
 import numpy as np
 import pandas as pd
 import re
-from anytree import Node, RenderTree
+import skeletons_config
+from imp import reload
+reload(skeletons_config)
 
 
 ## AUTHORSHIP INFORMATION
@@ -29,59 +35,6 @@ __version__ = "1.0"
 __maintainer__ = "David Pagnon"
 __email__ = "contact@david-pagnon.com"
 __status__ = "Production"
-
-
-## SKELETON DEFINITION
-'''
-This is given for the OpenPose body_25b joint hierarchy.
-Not taken into account if you're only importing the markers.
-
-If you want to import the skeleton, you need to adapt it to your own skeleton hierarchy.
-1. Your joint names should be your trc labels + letter J.
-   Example : trc label = 'CHip' --> joint name = 'CHipJ'
-2. Then you need to make sure your skeleton hierarchy is respected.
-   Your joint names must be defined from the root one to the more distal ones.
-3. Finally, reload the module: 
-  `from imp import reload
-   reload maya_trc`
-'''
-root = Node("CHipJ", children=[
-    Node("RHipJ", children=[
-        Node("RKneeJ", children=[
-            Node("RAnkleJ", children=[
-                Node("RBigToeJ", children=[
-                    Node("RSmallToeJ"),
-                ]),
-                Node("RHeelJ"),
-            ]),
-        ]),
-    ]),
-    Node("LHipJ", children=[
-        Node("LKneeJ", children=[
-            Node("LAnkleJ", children=[
-                Node("LBigToeJ", children=[
-                    Node("LSmallToeJ"),
-                ]),
-                Node("LHeelJ"),
-            ]),
-        ]),
-    ]),
-    Node("NeckJ", children=[
-        Node("HeadJ", children=[
-            Node("NoseJ"),
-        ]),
-        Node("RShoulderJ", children=[
-            Node("RElbowJ", children=[
-                Node("RWristJ"),
-            ]),
-        ]),
-        Node("LShoulderJ", children=[
-            Node("LElbowJ", children=[
-                Node("LWristJ"),
-            ]),
-        ]),
-    ]),
-])
 
 
 ## FUNCTIONS
@@ -151,7 +104,7 @@ def set_markers(data, labels, rangeFrames):
             cmds.setKeyframe(labels[j], t=i, at='translateY', v=data.iloc[i-firstFrame,3*j +2])
             cmds.setKeyframe(labels[j], t=i, at='translateZ', v=data.iloc[i-firstFrame,3*j+1 +2])
 
-            
+    
 def print_skeleton():
     '''
     Prints skeleton.
@@ -159,7 +112,7 @@ def print_skeleton():
     for pre, _, node in RenderTree(root):
         print("%s%s" % (pre, node.name))
 
-        
+    
 def set_skeleton(data, str_cnt, rangeFrames):
     '''
     Set skeleton from trc
@@ -222,13 +175,25 @@ def trc_callback(*arg):
 
     skeleton_check = cmds.checkBox(skeleton_box, query=True, value=True)
     if skeleton_check == True:
-        print_skeleton()
         set_skeleton(data, str_cnt, rangeFrames)
         cmds.parent(root.name+str_cnt, 'TRC'+str_cnt)
         
     cmds.playbackOptions(minTime=rangeFrames[0], maxTime=rangeFrames[-1])
     cmds.playbackOptions(playbackSpeed = 1)
     
+
+def skel_callback(*args):
+    '''
+    Inputs skeleton choice 
+    Prints skeleton hierarchy
+    '''
+    global root
+    cmds.checkBox(skeleton_box, edit=True, value=True)
+    skel = cmds.optionMenu(skeleton_choice, query=True, value=True)
+    root = eval('skeletons_config.root_'+skel)
+    print('# Skeleton ' + skel.upper() + ' #')
+    print_skeleton()
+
    
 ## WINDOW CREATION
 def trc_window():
@@ -237,11 +202,23 @@ def trc_window():
     '''
     global markers_box
     global skeleton_box
+    global skeleton_choice
     
     window = cmds.window(title='Import TRC', width=300)
-    cmds.columnLayout( adjustableColumn=True )
+    cmds.columnLayout(adjustableColumn=True)
     markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
-    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Needs to be Openpose body_25b, or else you need to adapt your hierarchy in function.')
+    
+    cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1,150), (2, 150)])
+    skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Define your custom hierarchy in "skeletons_config.py"')
+    skeleton_choice = cmds.optionMenu(changeCommand = skel_callback)
+    cmds.menuItem(label='body_25b')
+    cmds.menuItem(label='body_25')
+    cmds.menuItem(label='coco')
+    cmds.menuItem(label='body_135')
+    cmds.menuItem(label='custom')
+    
+    cmds.columnLayout(width=390)
+    cmds.rowColumnLayout(numberOfColumns=1, columnWidth=[(1,300)])
     cmds.button(label='Import trc', ann='Import and display trc', command = trc_callback)
     cmds.showWindow(window)
 
