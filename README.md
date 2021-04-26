@@ -42,15 +42,15 @@ Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
        ```
 &emsp;&emsp;If it does not work, check [there](http://mgland.com/qa/en/?qa=1748/how-to-use-pip-with-maya).
   
-  2. Clone the repository or just download the python piece of code you need.
+  2. Clone the repository or just download the python pieces of code you need.
 
   3. Open file at `<PATH_TO_DOCUMENTS_FOLDER>\maya\<YEAR>\maya.env`. Create it if it does't exist.\
      Type the following (replace what's in capital letters):
        ```
-       MAYA_SHELF_PATH = D:\softs\github\Maya-Mocap\shelves
-       PYTHONPATH = D:\softs\github\Maya-Mocap\scripts # You also need to add this 
+       MAYA_SHELF_PATH = <PATH_TO_MAYA_MOCAP>\shelves
+       PYTHONPATH = <PATH_TO_MAYA_MOCAP>\scripts # You also need to add this 
        # path to your environment variables if you already have a PYTHONPATH there
-       MAYA_PLUG_IN_PATH = D:\softs\github\Maya-Mocap\plug-ins
+       MAYA_PLUG_IN_PATH = <PATH_TO_MAYA_MOCAP>\plug-ins
        ```
  
  That's it! After opening Maya, you should get a new shelf with new tools ready to be used.\
