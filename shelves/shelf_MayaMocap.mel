@@ -8,7 +8,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -41,7 +41,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -74,7 +74,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -107,7 +107,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -140,7 +140,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -173,7 +173,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
@@ -219,7 +219,7 @@ global proc shelf_MayaMocap () {
         -enableCommandRepeat 1
         -enable 1
         -width 35
-        -height 34
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0

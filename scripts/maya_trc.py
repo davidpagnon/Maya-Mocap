@@ -122,6 +122,8 @@ def set_skeleton(data, str_cnt, rangeFrames):
     '''
     # Create joints
     cmds.select(None)
+    skel_callback()
+    
     cmds.joint(name = root.name+str_cnt)
     for _, _, node in RenderTree(root):    
         if node.name != root.name:
