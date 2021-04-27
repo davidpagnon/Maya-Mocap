@@ -1,3 +1,4 @@
 **/nppBackup/
 **/__pycache__/
 *.pyc
+**/.mayaSwatches/
