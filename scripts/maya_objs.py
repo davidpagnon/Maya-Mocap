@@ -60,6 +60,7 @@ def obj_callback(*args):
         img_dir = os.path.dirname(obj_path)
         # Change image names to comply with 'name.XXX.png'
         rename4seq(img_dir, filetype)
+        rename4seq(img_dir, 'obj')
         # Apply texture
         img_files = glob.glob(os.path.join(img_dir, '*.'+filetype))
         applyTexture(obj_shape, img_files[0], sequence=True)
