@@ -227,6 +227,7 @@ def filmfromCam_callback(*args):
     
     # video specs
     size = cmds.getAttr("defaultResolution.width"), cmds.getAttr("defaultResolution.height")
+    cmds.setAttr("defaultRenderGlobals.imageFormat", 32) # *.png
     cmds.grid(toggle=0)
     cmds.setAttr('cameras.visibility', 0)
 
@@ -237,8 +238,6 @@ def filmfromCam_callback(*args):
 
         cmds.select(c)
         cmds.lookThru(c)
-        cmds.setAttr("defaultRenderGlobals.imageFormat", 32) # *.png
-        
         cmds.playblast(format='image', wh=size, percent=100, f=os.path.join(cam_dir,os.path.basename(path)+'_cam%d'%(i+1)), viewer=False)
     
     cmds.grid(toggle=1)
