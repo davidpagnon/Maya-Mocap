@@ -76,10 +76,10 @@ def setCamsfromSpecs_callback(*args):
         cmds.setAttr(camShape + '.aiRadialDistortion', disto) #1 for GoPro (roughly)
         if number == 2 or number == 4:
             ang = 90*c * np.pi/180
-            cmds.xform(cam, translation = [distance*np.cos(ang),distance*np.sin(ang), 1.5])
+            cmds.xform(cam, translation = [distance*np.cos(ang),distance*np.sin(ang), 1])
         elif number == 8:
             ang = 45*c * np.pi/180
-            cmds.xform(cam, translation = [distance*np.cos(ang),distance*np.sin(ang), 1.5])
+            cmds.xform(cam, translation = [distance*np.cos(ang),distance*np.sin(ang), 1])
         elif number == 16:
             if c<8:
                 ang = 45*c * np.pi/180

@@ -70,7 +70,7 @@ root_body_25 = Node("CHipJ", id=8, children=[
         ]),
     ]),
     Node("NeckJ", id=17, children=[
-        Node("Nose", id=0),
+        Node("NoseJ", id=0),
         Node("RShoulderJ", id=2, children=[
             Node("RElbowJ", id=3, children=[
                 Node("RWristJ", id=4),
@@ -97,7 +97,7 @@ root_coco = Node("CHipJ", id=None, children=[
         ]),
     ]),
     Node("NeckJ", id=1, children=[
-        Node("Nose", id=0),
+        Node("NoseJ", id=0),
         Node("RShoulderJ", id=2, children=[
             Node("RElbowJ", id=3, children=[
                 Node("RWristJ", id=4),
