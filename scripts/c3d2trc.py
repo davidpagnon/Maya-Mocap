@@ -11,8 +11,8 @@
     Beware that it only allows you to retrieve 3D points, you won't get analog data nor computed data sucha as angles or powers with this code. 
     
     Usage: 
-    run c3d2trc -i <input_file>.trc
-    run c3d2trc -i <input_file>.trc -o <input_file>.c3d
+    run c3d2trc -i <input_file>.c3D
+    run c3d2trc -i <input_file>.c3D -o <input_file>.trc
 '''
 
 
