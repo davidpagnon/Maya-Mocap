@@ -212,7 +212,7 @@ def filmfromCam_callback(*args):
     # list cameras
     cameras = cmds.ls(type=('camera'), l=True)
     startup_cameras = [camera for camera in cameras if cmds.camera(cmds.listRelatives(camera, parent=True)[0], startupCamera=True, q=True)]
-    non_startup_cameras = list(set(cameras) - set(startup_cameras))
+    non_startup_cameras = [cam for cam in cameras if cam not in startup_cameras] 
     cam_transforms = list(map(lambda x: cmds.listRelatives(x, parent=True)[0], non_startup_cameras))
     
     # path and confirm dialog window
