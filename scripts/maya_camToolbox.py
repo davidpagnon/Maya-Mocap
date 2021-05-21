@@ -148,7 +148,6 @@ def setCamsfromCal_callback(*args):
         cmds.setAttr("defaultResolution.width", W) 
         cmds.setAttr("defaultResolution.height", H) 
         cmds.select(cam)
-        cmds.rotate(180,0,0, objectSpace=1, relative=1)
 
     cmds.select(cams)
     cmds.group(n='cameras')
@@ -185,8 +184,12 @@ def saveCalfromCam_callback(*args):
         Rmat = Rmat . dot(np.array([[1,0,0],[0,-1,0],[0,0,-1]])) # rotx 180
         Tmat = np.array(Mmat).reshape(4,4)[:3,3]
         
-        rotation.append(cv2.Rodrigues(Rmat.T)[0] .flatten()  .tolist())
-        translation.append( (-Rmat.T . dot(Tmat) ) .flatten() .tolist() ) # * 1000) . tolist() )
+        # maya to opencv system coordinates
+        Rmat_cv = Rmat.T
+        Tmat_cv = -Rmat.T . dot(Tmat)
+        
+        rotation.append(cv2.Rodrigues(Rmat_cv)[0] .flatten() .tolist())
+        translation.append(Tmat_cv.tolist() )
 
     # Save calibration as .toml file
     cal_folder = cmds.fileDialog2(dialogStyle=2, cap="Select folder to save calibration", fm=3)[0]
