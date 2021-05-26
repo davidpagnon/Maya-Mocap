@@ -174,7 +174,7 @@ def saveCalfromCam_callback(*args):
     matrix = [[fp/binning_factor, 0., cu/binning_factor,], [0.0, fp/binning_factor, cv/binning_factor,], [0.0, 0.0, 1.0,],]
     # Distortion
     disto = cmds.getAttr(cams[0] + 'Shape1.aiRadialDistortion')
-    distortions = [-disto/4, 0. ,0. ,0.,] # Cuisine pour passer de la distorsion de maya (fisheye?) a celle de opencv (pinhole?)
+    distortions = [-disto/4., 0. ,0. ,0.,] # Cuisine pour passer de la distorsion de maya (fisheye?) a celle de opencv (pinhole?)
     # Rotation, Translation
     rotation, translation = [], []
     for c in range(len(cams)):
