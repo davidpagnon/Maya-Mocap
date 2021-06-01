@@ -153,9 +153,9 @@ def set_skeleton(data, str_cnt, rangeFrames):
                 cmds.joint(cmds.listRelatives(jointsJ[j], parent=True), e=True, zso=True, oj='xyz', sao='yup')
                 cmds.setKeyframe(jointsJ[j], t=i)
 
-    '''Evaluation mode to DG to make sure bones are connecting the joints
+    '''Evaluation mode to DG to make sure bones are connecting the joints (not needed in Maya 2022).
     Change it in Windows -> Settings/Preferences -> Preferences -> Animation -> Evaluation mode -> DG'''
-    # cmds.evaluationManager(mode="off")
+    cmds.evaluationManager(mode="off")
 
 def trc_callback(*arg):
     '''
