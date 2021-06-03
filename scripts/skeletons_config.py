@@ -111,5 +111,32 @@ root_coco = Node("CHipJ", id=None, children=[
     ]),
 ])
 
+# MPI
+root_mpi = Node("CHipJ", id=14, children=[
+    Node("RHipJ", id=8, children=[
+        Node("RKneeJ", id=9, children=[
+            Node("RAnkleJ", id=10),
+        ]),
+    ]),
+    Node("LHipJ", id=11, children=[
+        Node("LKneeJ", id=12, children=[
+            Node("LAnkleJ", id=13),
+        ]),
+    ]),
+    Node("NeckJ", id=1, children=[
+        Node("Head", id=0),
+        Node("RShoulderJ", id=2, children=[
+            Node("RElbowJ", id=3, children=[
+                Node("RWristJ", id=4),
+            ]),
+        ]),
+        Node("LShoulderJ", id=5, children=[
+            Node("LElbowJ", id=6, children=[
+                Node("LWristJ", id=7),
+            ]),
+        ]),
+    ]),
+])
+
 # BODY_135
 root_body_135 = Node("")
