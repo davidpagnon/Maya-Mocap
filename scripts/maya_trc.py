@@ -217,6 +217,7 @@ def trc_window():
     cmds.menuItem(label='body_25b')
     cmds.menuItem(label='body_25')
     cmds.menuItem(label='coco')
+    cmds.menuItem(label='mpi')
     cmds.menuItem(label='body_135')
     cmds.menuItem(label='custom')
     
