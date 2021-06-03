@@ -48,10 +48,13 @@ Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
      Type the following (replace what's in capital letters):
        ```
        MAYA_SHELF_PATH = <PATH_TO_MAYA_MOCAP>\shelves
-       PYTHONPATH = <PATH_TO_MAYA_MOCAP>\scripts # You also need to add this 
-       # path to your environment variables if you already have a PYTHONPATH there
+       PYTHONPATH = <PATH_TO_MAYA_MOCAP>\scripts 
        MAYA_PLUG_IN_PATH = <PATH_TO_MAYA_MOCAP>\plug-ins
        ```
+       
+       You may also need to add this PYTHONPATH to your environment variables.\
+       `Windows -> Environment Variables -> New -> Name: PYTHONPATH, Value: <PATH_TO_MAYA_MOCAP>\scripts` 
+ 
  
  That's it! After opening Maya, you should get a new shelf with new tools ready to be used.\
 ![image](https://user-images.githubusercontent.com/54667644/114212078-b3a8e580-9961-11eb-9b3c-6c69ffd114e3.png)
