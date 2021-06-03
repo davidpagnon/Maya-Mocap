@@ -9,7 +9,8 @@
 # Maya Mocap
 
 **[Maya Mocap](https://github.com/davidpagnon/Maya-Mocap)** is a collection of open-source tools for Motion Capture in Maya.\
-Tested on Maya 2018 (python 2) and on Maya 2022 (python 3).
+
+Tested on Maya 2018 (python 2) and on Maya 2022 (python 3). Not tested on Linux nor MacOS yet.
 
 
 
