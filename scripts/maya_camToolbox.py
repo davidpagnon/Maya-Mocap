@@ -148,6 +148,7 @@ def setCamsfromCal_callback(*args):
         cmds.setAttr("defaultResolution.width", W) 
         cmds.setAttr("defaultResolution.height", H) 
         cmds.select(cam)
+        cmds.rotate(180,0,0, objectSpace=1, relative=1)
 
     cmds.select(cams)
     cmds.group(n='cameras')
