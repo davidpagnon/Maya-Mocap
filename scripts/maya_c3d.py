@@ -102,7 +102,7 @@ def c3d_window():
     
     window = cmds.window(title='Import C3D', width=300)
     cmds.columnLayout( adjustableColumn=True )
-    markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators')
+    markers_box = cmds.checkBox(label='Display markers', ann='Display markers as locators', v=1)
     
     cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1,150), (2, 150)])
     skeleton_box = cmds.checkBox(label='Display skeleton', ann='Reconstruct skeleton. Define your custom hierarchy in "skeletons_config.py"')
