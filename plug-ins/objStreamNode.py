@@ -36,10 +36,10 @@ __author__ = "Lionel Reveret"
 __copyright__ = "Copyright 2021, Maya-Mocap"
 __credits__ = ["Lionel Reveret"]
 __license__ = "BSD 3-Clause License"
-__version__ = "1.0"
+__version__ = "0.1"
 __maintainer__ = ["Lionel Reveret", "David Pagnon"]
 __email__ = ["lionel.reveret@inria.fr", "contact@david-pagnon.com"]
-__status__ = "Production"
+__status__ = "Development"
 
 
 def maya_useNewAPI():

@@ -32,10 +32,10 @@ __author__ = "David Pagnon"
 __copyright__ = "Copyright 2021, Maya-Mocap"
 __credits__ = ["David Pagnon"]
 __license__ = "BSD 3-Clause License"
-__version__ = "1.0"
+__version__ = "0.1"
 __maintainer__ = "David Pagnon"
 __email__ = "contact@david-pagnon.com"
-__status__ = "Production"
+__status__ = "Development"
 
 
 ## FUNCTIONS
