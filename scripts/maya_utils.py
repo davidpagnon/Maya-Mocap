@@ -21,6 +21,7 @@ import numpy as np
 import cv2
 import os
 import glob
+import sys
 import re
 
 
@@ -60,19 +61,19 @@ def rename4seq(dir, filetype):
     Maya needs such names to identify files as a sequence.
     '''
     files = glob.glob(os.path.join(dir, '*.'+filetype))
-    while True:
-        try: 
-            int(os.path.basename(files[0]).split('.')[-2]) # verif .XXX.
-            break
-        except:
-            # change name?
-            confirm = cmds.confirmDialog(title='Confirm', message='Rename files to help Maya identify them as a sequence?', button=['Yes','No'], defaultButton='Yes', cancelButton='No', dismissString='No')
-            if confirm == 'No':
-                break
-            # change name.
-            for i, f in enumerate(files):
-                os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%i + filetype))
-            print(dir, ': Files renamed')
+    print(files)
+    try: 
+        int(os.path.basename(files[0]).split('.')[-2]) # verif .XXX.
+        return
+    except:
+        # change name?
+        confirm = cmds.confirmDialog(title='Confirm', message='Rename files to help Maya identify them as a sequence?', button=['Yes','No'], defaultButton='Yes', cancelButton='No', dismissString='No')
+        if confirm == 'No':
+            return
+        # change name.
+        for i, f in enumerate(files):
+            os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%i + filetype))
+        print(dir, ': Files renamed')
 
     
 def applyTexture(shape, filename, sequence=False):
