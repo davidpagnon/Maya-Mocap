@@ -61,7 +61,6 @@ def rename4seq(dir, filetype):
     Maya needs such names to identify files as a sequence.
     '''
     files = glob.glob(os.path.join(dir, '*.'+filetype))
-    print(files)
     try: 
         int(os.path.basename(files[0]).split('.')[-2]) # verif .XXX.
         return
@@ -72,7 +71,7 @@ def rename4seq(dir, filetype):
             return
         # change name.
         for i, f in enumerate(files):
-            os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%i + filetype))
+            os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%(i+1) + filetype))
         print(dir, ': Files renamed')
 
     
