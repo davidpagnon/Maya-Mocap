@@ -72,7 +72,7 @@ def rename4seq(dir, filetype):
             # change name.
             for i, f in enumerate(files):
                 os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%i + filetype))
-            print(dir, ': Files renamed')
+            print('Files renamed in ' + dir)
 
     
 def applyTexture(shape, filename, sequence=False):
