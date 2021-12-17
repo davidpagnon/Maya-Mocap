@@ -21,6 +21,7 @@ import numpy as np
 import cv2
 import os
 import glob
+import sys
 import re
 
 
@@ -29,10 +30,10 @@ __author__ = "David Pagnon"
 __copyright__ = "Copyright 2021, Maya-Mocap"
 __credits__ = ["David Pagnon"]
 __license__ = "BSD 3-Clause License"
-__version__ = "1.0"
+__version__ = "0.1"
 __maintainer__ = "David Pagnon"
 __email__ = "contact@david-pagnon.com"
-__status__ = "Production"
+__status__ = "Development"
 
 
 ## FUNCTIONS
@@ -63,16 +64,17 @@ def rename4seq(dir, filetype):
     while True:
         try: 
             int(os.path.basename(files[0]).split('.')[-2]) # verif .XXX.
-            break
+            return
         except:
             # change name?
             confirm = cmds.confirmDialog(title='Confirm', message='Rename files to help Maya identify them as a sequence?', button=['Yes','No'], defaultButton='Yes', cancelButton='No', dismissString='No')
             if confirm == 'No':
-                break
+                return
             # change name.
             for i, f in enumerate(files):
                 os.rename(f, os.path.join(dir, os.path.basename(dir)+ '.%05d.'%i + filetype))
             print('Files renamed in ' + dir)
+            return
 
     
 def applyTexture(shape, filename, sequence=False):

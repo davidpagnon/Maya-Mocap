@@ -20,6 +20,7 @@
 import maya.cmds as cmds
 import os
 import glob
+import sys
 import numpy as np
 import cv2
 import maya_utils
@@ -30,10 +31,10 @@ __author__ = "David Pagnon"
 __copyright__ = "Copyright 2021, Maya-Mocap"
 __credits__ = ["David Pagnon"]
 __license__ = "BSD 3-Clause License"
-__version__ = "1.0"
+__version__ = "0.1"
 __maintainer__ = "David Pagnon"
 __email__ = "contact@david-pagnon.com"
-__status__ = "Production"
+__status__ = "Development"
 
 
 ## FUNCTIONS
@@ -252,7 +253,7 @@ def filmfromCam_callback(*args):
 def setVidfromSeq_callback(*args):
     '''
     Display image sequences behind each camera in scene.
-    Each sequence should be in a different camera folder which name includes 'img'.
+    Each sequence should be in a different camera folder with string 'img' in its name.
     '''
     binning_factor = float(cmds.textFieldGrp(binning_field, query=1, text=1))
     filetype = cmds.textField(extension_field, query=1, text=1)
@@ -261,6 +262,9 @@ def setVidfromSeq_callback(*args):
     path = cmds.fileDialog2(dialogStyle=2, cap="Choose root directory of videos folders", fm=3)[0]
     img_dirs = list(filter( lambda item: 'img' in item, next(os.walk(path))[1] ))
     img_dirs_full = [os.path.join( path, dir ) for dir in img_dirs]
+    if img_dirs_full == []:
+        print('Please convert your videos to image sequences, and place each sequence in a different camera folder with string "img" in its name')
+        sys.exit()
     
     # Change image names to comply with 'name.XXX.png'
     for img_dir in img_dirs_full:
@@ -422,7 +426,7 @@ def cam_window():
     cmds.text(label='Image extension')
     extension_field = cmds.textField(text='png', width=30)
     cmds.text(label=' ', backgroundColor=[.5,.5,.5])
-    scaling_box = cmds.checkBox(label='Apply scaling', backgroundColor=[.5,.5,.5], ann='Image plane size is invariant in translation in the camera view')
+    scaling_box = cmds.checkBox(label='Apply scaling', backgroundColor=[.5,.5,.5], ann='Image plane size is invariant in translation in the camera view', value=True)
     cmds.button(label='Display videos', ann='Display images sequences for illustration purposes', command = setVidfromSeq_callback)
 
     # OTHER ACTIONS ON OBJECTS
