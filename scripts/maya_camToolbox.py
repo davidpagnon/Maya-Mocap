@@ -72,7 +72,7 @@ def setCamsfromSpecs_callback(*args):
     # set cameras
     cams = []
     for c in range(number):
-        cam, camShape = cmds.camera(n='cam_%d'%(c+1), focalLength=fm, horizontalFilmAperture = W*px_size*39.3701, verticalFilmAperture = H*px_size*39.3701) # m->inch : *39.3701
+        cam, camShape = cmds.camera(n='cam_%02d'%(c+1), focalLength=fm, horizontalFilmAperture = W*px_size*39.3701, verticalFilmAperture = H*px_size*39.3701) # m->inch : *39.3701
         cams.append(cam)
         cmds.setAttr(camShape + '.aiRadialDistortion', disto) #1 for GoPro (roughly)
         if number == 2 or number == 4:
@@ -132,22 +132,22 @@ def setCamsfromCal_callback(*args):
     # set cameras
     cams=[]
     for c in range(len(R)): # Pour chaque cam
-        Rc =  R['cam_%d' %(c+1)].T
-        Tc = -R['cam_%d' %(c+1)].T . dot(T['cam_%d' %(c+1)])# / 1000 # Pour l'avoir en m
+        Rc =  R['cam_%02d' %(c+1)].T
+        Tc = -R['cam_%02d' %(c+1)].T . dot(T['cam_%02d' %(c+1)])# / 1000 # Pour l'avoir en m
         M = np.block([[Rc,Tc.reshape(3,1)], [np.zeros(3), 1 ]])
         Mlist = M.T.reshape(1,-1)[0].tolist()
         
-        fm = K['cam_%d' %(c+1)][0, 0] * px_size * 1000 # fp*px*1000 [mm]
+        fm = K['cam_%02d' %(c+1)][0, 0] * px_size * 1000 # fp*px*1000 [mm]
         
-        W, H = S['cam_%d' %(c+1)]        
+        W, H = S['cam_%02d' %(c+1)]        
         
-        cam, camShape = cmds.camera(n='cam_%d' %(c+1), focalLength=fm, horizontalFilmAperture = W*px_size*39.3701*binning_factor, verticalFilmAperture = H*px_size*39.3701*binning_factor)  # m->inch : *39.3701
+        cam, camShape = cmds.camera(n='cam_%02d' %(c+1), focalLength=fm, horizontalFilmAperture = W*px_size*39.3701*binning_factor, verticalFilmAperture = H*px_size*39.3701*binning_factor)  # m->inch : *39.3701
         cams.append(cam) 
 
-        cmds.setAttr(camShape + '.aiRadialDistortion', float(-D['cam_%d' %(c+1)][0]*4)) # Cuisine pour passer de la distorsion de maya (fisheye?) a celle de opencv (pinhole?)
+        cmds.setAttr(camShape + '.aiRadialDistortion', float(-D['cam_%02d' %(c+1)][0]*4)) # Cuisine pour passer de la distorsion de maya (fisheye?) a celle de opencv (pinhole?)
         cmds.xform(cam, m=Mlist)
-        cmds.setAttr("defaultResolution.width", W) 
-        cmds.setAttr("defaultResolution.height", H) 
+        cmds.setAttr("defaultResolution.width", float(W)) 
+        cmds.setAttr("defaultResolution.height", float(H)) 
         cmds.select(cam)
         cmds.rotate(180,0,0, objectSpace=1, relative=1)
 
@@ -197,8 +197,8 @@ def saveCalfromCam_callback(*args):
     cal_folder = cmds.fileDialog2(dialogStyle=2, cap="Select folder to save calibration", fm=3)[0]
     with open(os.path.join(cal_folder, '%d_virtualCams_calibration.toml'%len(cams)), 'w+') as cal_f:
         for c in range(len(cams)):
-            cam_str='[cam_%d]\n'%(c+1)
-            name_str = 'name = "cam_%d"\n'%(c+1)
+            cam_str='[cam_%02d]\n'%(c+1)
+            name_str = 'name = "cam_%02d"\n'%(c+1)
             size_str = 'size = ' + str(size) + '\n'
             mat_str = 'matrix = ' + str(matrix) + '\n'
             dist_str = 'distortions = ' + str(distortions) + '\n' 
@@ -281,6 +281,7 @@ def setVidfromSeq_callback(*args):
         camMat = cmds.xform(c, query=True, matrix=True)
         distance = cmds.xform(c, q=1, os=1, translation=1)[2]
         # image plane size at camera origin (m)
+        # /!\ in case of cameras from yml calibration, take W and H from first image, not from calibration file /!\
         W = cmds.camera(c, query=True, horizontalFilmAperture=True) / 39.3701 / binning_factor
         H = cmds.camera(c, query=True, verticalFilmAperture=True) / 39.3701 / binning_factor
         # create image plane
